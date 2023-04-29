@@ -1,5 +1,6 @@
 import {Component, Entity, RenderCircle, Sprite} from "lagom-engine";
 import {CustomHex} from "./grid/Grid";
+import {BeltSpeed, InputBuffer, OutputBuffer} from "./tiles/Belt";
 
 export class GridObject extends Component
 {
@@ -37,5 +38,8 @@ export class Miner extends Entity {
     {
         super.onAdded();
         this.addComponent(new RenderCircle(0, 0, 10, 0x00FF00));
+        this.addComponent(new InputBuffer(100, 100));
+        this.addComponent(new OutputBuffer(1, 0));
+        this.addComponent(new BeltSpeed(1));
     }
 }
