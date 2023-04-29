@@ -1,29 +1,72 @@
-import {Component, Entity, Key, RenderCircle, RenderRect, System} from "lagom-engine";
+import {Button, Component, Entity, GlobalSystem, Key, Log, RenderCircle, RenderRect, System} from "lagom-engine";
 import {LD53} from "./LD53";
+import {Assembler, MatStorage, Miner} from "./GridObject";
 
-class Selected extends Component {
+class Selected extends Component
+{
     constructor(public idx: number = 0)
     {
         super();
     }
 }
 
-class Highlight extends RenderRect {
+class Highlight extends RenderRect
+{
 
 }
-class PlaceSelector extends System<[Selected, Highlight]> {
+
+class Placer extends GlobalSystem
+{
+    types = () => [Selected];
+
+    update(delta: number): void
+    {
+        if (this.scene.game.mouse.isButtonPressed(Button.LEFT))
+        {
+            this.runOnComponents((selected: Selected[]) => {
+                if (selected.length == 0) return;
+                // Determine which grid square is under the mouse.
+                const mx = this.scene.game.mouse.getPosX();
+                const my = this.scene.game.mouse.getPosY();
+                const mousePos = this.scene.camera.viewToWorld(mx, my);
+
+                // TODO normalize mouse pos
+                // TODO look up grid position, see if anything is there.
+                switch (selected[0].idx)
+                {
+                    case 0:
+                        this.scene.addEntity(new MatStorage("aaa", mousePos.x, mousePos.y));
+                        break;
+                    case 1:
+                        this.scene.addEntity(new Assembler("aaa", mousePos.x, mousePos.y));
+                        break;
+                    case 2:
+                        this.scene.addEntity(new Miner("aaa", mousePos.x, mousePos.y));
+                        break;
+                }
+            });
+        }
+    }
+
+}
+
+class PlaceSelector extends System<[Selected, Highlight]>
+{
     types = () => [Selected, Highlight];
 
     update(delta: number): void
     {
         this.runOnEntities((entity, selected, rect) => {
-            if (this.scene.game.keyboard.isKeyPressed(Key.Digit1)) {
+            if (this.scene.game.keyboard.isKeyPressed(Key.Digit1))
+            {
                 selected.idx = 0;
             }
-            if (this.scene.game.keyboard.isKeyPressed(Key.Digit2)) {
+            if (this.scene.game.keyboard.isKeyPressed(Key.Digit2))
+            {
                 selected.idx = 1;
             }
-            if (this.scene.game.keyboard.isKeyPressed(Key.Digit3)) {
+            if (this.scene.game.keyboard.isKeyPressed(Key.Digit3))
+            {
                 selected.idx = 2;
             }
 
@@ -31,15 +74,19 @@ class PlaceSelector extends System<[Selected, Highlight]> {
         });
     }
 }
-export class PlacerGui extends Entity {
+
+export class PlacerGui extends Entity
+{
     constructor()
     {
         super("placer gui", 0, 0);
     }
+
     onAdded()
     {
         super.onAdded();
         this.scene.addSystem(new PlaceSelector());
+        this.scene.addGlobalSystem(new Placer());
         this.addComponent(new Selected());
         this.addComponent(new RenderRect(0, 0, 30, LD53.WINDOW_HEIGHT, 0x000020));
 
@@ -52,7 +99,7 @@ export class PlacerGui extends Entity {
         // Miner
         this.addComponent(new RenderCircle(15, 75, 10, 0x00FF00));
 
-        this.addComponent(new Highlight(0,0, 30, 30, null, 0x444444));
+        this.addComponent(new Highlight(0, 0, 30, 30, null, 0x444444));
 
 
     }

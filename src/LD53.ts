@@ -11,9 +11,9 @@ class MainScene extends Scene
         super.onAdded();
         this.addGUIEntity(new PlacerGui());
         this.addGlobalSystem(new CameraMover());
-        this.addEntity(new Miner("miner", 120, 20));
-        this.addEntity(new MatStorage("storage", 220, 20));
-        this.addEntity(new Assembler("assembler", 320, 20));
+        // this.addEntity(new Miner("miner", 120, 20));
+        // this.addEntity(new MatStorage("storage", 220, 20));
+        // this.addEntity(new Assembler("assembler", 320, 20));
         this.addEntity(new HexGrid("Grid", 0, 0, 0));
 
         this.addEntity(new Belt("b1"));
@@ -28,6 +28,9 @@ export class CameraMover extends GlobalSystem {
     readonly moveSpeed: number = 150;
     update(delta: number): void
     {
+        if (this.scene.game.mouse.getPosX())
+
+
         if (this.scene.game.keyboard.isKeyDown(Key.KeyA)) {
             this.scene.camera.translate(-this.moveSpeed * delta/1000, 0);
         }
