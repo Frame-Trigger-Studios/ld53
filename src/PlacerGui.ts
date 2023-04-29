@@ -11,7 +11,7 @@ import {
     System
 } from "lagom-engine";
 import {LD53} from "./LD53";
-import {Assembler, MatStorage, Miner} from "./GridObject";
+import {Assembler, HexReference, MatStorage, Miner} from "./GridObject";
 import {CustomHex, GRID} from "./grid/Grid";
 import {Belt} from "./tiles/Belt";
 import {Direction} from "honeycomb-grid";
