@@ -7,29 +7,20 @@ export class CustomHex extends defineHex({
     orientation: Orientation.FLAT,
 }) {
     private capacity = 4;
+    private entity: Entity | null = null;
 }
+
+export const GRID = new Grid(CustomHex, rectangle({width: 10, height: 10}));
 
 export class HexGrid extends Entity {
 
-    private grid = new Grid(CustomHex, rectangle({width: 10, height: 10}));
     onAdded() {
         super.onAdded();
 
-        this.grid.forEach(hex => {
-            this.getScene().addEntity(new SingleHex(hex));
+        GRID.forEach(hex => {
+            this.addComponent(new RenderPoly(
+                hex.corners.map(cnr => new Point(cnr.x, cnr.y))
+            ));
         });
-    }
-}
-
-export class SingleHex extends Entity {
-
-    constructor(readonly hex: CustomHex) {
-        super(`SingleHex-${hex.x}-${hex.y}`);
-    }
-
-    onAdded() {
-        this.addComponent(new RenderPoly(
-            this.hex.corners.map(cnr => new Point(cnr.x, cnr.y))
-        ));
     }
 }
