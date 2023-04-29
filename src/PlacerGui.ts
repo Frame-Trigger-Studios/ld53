@@ -46,7 +46,9 @@ class Placer extends GlobalSystem
                             entity = new Assembler("aaa", hex.x, hex.y);
                             break;
                         case 2:
-                            entity = new Miner("aaa", hex.x, hex.y);
+                            if (hex.terrain) {
+                                entity = new Miner("aaa", hex.x, hex.y);
+                            }
                             break;
                     }
 
