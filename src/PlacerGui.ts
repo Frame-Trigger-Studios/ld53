@@ -105,6 +105,10 @@ class Placer extends GlobalSystem
                         const dir = this.dirFor(hex, this.highlighted);
                         entity.addConnection(dir);
                         entity.addComponent(new HexReference(hex));
+                        if (this.highlighted.entity instanceof Belt)
+                        {
+                            this.highlighted.entity.addConnection((dir + 3) % 6);
+                        }
                         hex.entity = entity;
                         this.hilight(hex);
 
