@@ -19,7 +19,7 @@ export class Belt extends Entity {
 
     addConnection(dir: number) {
         this.getComponent<Connections>(Connections)?.dirs.push(dir);
-        this.addComponent(new Sprite(this.scene.game.getResource("belt").textureFromIndex(dir), {xOffset: -16, yOffset: -16}));
+        this.addComponent(new Sprite(this.scene.game.getResource("belt").texture(dir, 0, 32, 32), {xOffset: -16, yOffset: -16}));
     }
 }
 
