@@ -45,18 +45,19 @@ class ValidPlacements extends Entity
     {
         super.onAdded();
         // Add valid placement indicators around this one, if the spaces are free.
-        // this.center.
         const DIRS = [Direction.N, Direction.NE, Direction.SE, Direction.S, Direction.SW, Direction.NW];
+
         for (const dir of DIRS)
         {
             const neighbour = GRID.neighborOf(this.center, dir, {allowOutside: false});
             if (neighbour && neighbour?.entity == null)
             {
-                const option = this.addChild(new Entity("option", neighbour.x - this.transform.x, neighbour.y - this.transform.y));
-                    option.addComponent(new Sprite(this.scene.game.getResource("blue").textureFromIndex(0), {
-                        xOffset: -16,
-                        yOffset: -16
-                    }));
+                const option = this.addChild(
+                    new Entity("option", neighbour.x - this.transform.x, neighbour.y - this.transform.y));
+                option.addComponent(new Sprite(this.scene.game.getResource("blue").textureFromIndex(0), {
+                    xOffset: -16,
+                    yOffset: -16
+                }));
             }
         }
     }
@@ -67,6 +68,14 @@ class Placer extends GlobalSystem
     private highlighted: CustomHex | undefined = undefined;
 
     types = () => [Selected];
+
+    hilight(hex: CustomHex): void
+    {
+        this.highlighted = hex;
+        this.scene.getEntityWithName("placements")?.destroy();
+        this.scene.addEntity(new ValidPlacements(hex));
+        Log.info("we have chosen", this.highlighted);
+    }
 
     update(delta: number): void
     {
@@ -81,50 +90,78 @@ class Placer extends GlobalSystem
 
                 const hex = GRID.pointToHex(mousePos, {allowOutside: false});
 
+                // Ivalid position.
                 if (!hex) return;
 
-                // Empty space, we want to put a building down
+                // Empty space
                 if (hex.entity == null)
                 {
-
-                    let entity: Entity | null = null;
-
-                    switch (selected[0].idx)
+                    // Check if we are adjacent to `highlighted` which was selected last time we clicked
+                    if (this.highlighted)
                     {
-                        case 0:
-                            entity = new MatStorage("aaa", hex.x, hex.y);
-                            break;
-                        case 1:
-                            entity = new Assembler("aaa", hex.x, hex.y);
-                            break;
-                        case 2:
-                            if (hex.terrain) {
-                                entity = new Miner("aaa", hex.x, hex.y);
-                            }
-                            break;
-                        case 3:
-                            entity = new Belt("aaa", hex.x, hex.y);
-                            break;
+                        if (GRID.distance(hex, this.highlighted) == 1)
+                        {
+                            // Build a belt from highlighted -> hex
+                            const entity = this.scene.addEntity(new Belt("aaa", hex.x, hex.y));
+                            const dir = this.dirFor(hex, this.highlighted);
+                            entity.addConnection(dir);
+                            entity.addComponent(new HexReference(hex));
+                            hex.entity = entity;
+                            this.hilight(hex);
+                        }
                     }
-
-                    if (entity)
+                    else
                     {
-                        entity = this.scene.addEntity(entity);
-                        entity.addComponent(new HexReference(hex));
-                        hex.entity = entity;
+                        // This is just straight up empty, trigger building placement.
+                        let entity: Entity | null = null;
+
+                        switch (selected[0].idx)
+                        {
+                            case 0:
+                                entity = new MatStorage("aaa", hex.x, hex.y);
+                                break;
+                            case 1:
+                                entity = new Assembler("aaa", hex.x, hex.y);
+                                break;
+                            case 2:
+                                if (hex.terrain)
+                                {
+                                    entity = new Miner("aaa", hex.x, hex.y);
+                                }
+                                break;
+                            case 3:
+                                entity = new Belt("aaa", hex.x, hex.y);
+                                break;
+                        }
+
+                        if (entity)
+                        {
+                            entity = this.scene.addEntity(entity);
+                            entity.addComponent(new HexReference(hex));
+                            hex.entity = entity;
+                        }
                     }
-                } else
+                }
+                else
                 {
-                    // Something is already here, select it for road placement purposes.
-                    this.highlighted = hex;
-                    this.scene.getEntityWithName("placements")?.destroy();
-                    this.scene.addEntity(new ValidPlacements(hex));
-                    Log.info("we have chosen", this.highlighted);
+                    // Something is already here, select it for belt placement purposes.
+                    this.hilight(hex);
                 }
             });
         }
     }
 
+    private dirFor(hex1: CustomHex, hex2: CustomHex): number
+    {
+        const DIRS = [Direction.N, Direction.NE, Direction.SE, Direction.S, Direction.SW, Direction.NW];
+        for (let i = 0; i < DIRS.length; i++){
+            const dir = DIRS[i];
+            const neighbour = GRID.neighborOf(hex1, dir, {allowOutside: false});
+            if (neighbour?.equals(hex2)) return i;
+        }
+
+        return -1;
+    }
 }
 
 export class BeltPlacer extends System<[Selected]>
