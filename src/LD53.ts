@@ -2,6 +2,7 @@ import {HexGrid} from "./grid/Grid";
 import {Game, GlobalSystem, Key, Scene, SpriteSheet} from 'lagom-engine';
 import {PlacerGui} from "./PlacerGui";
 import {Belt, BeltSystem} from "./tiles/Belt";
+import {worldGen} from "./grid/worldGen";
 import orangeSpr from "./Art/orange.png";
 import blueSpr from "./Art/blue.png";
 import beltSpr from "./Art/belt.png";
@@ -20,6 +21,8 @@ class MainScene extends Scene
         this.addEntity(new Belt("b1"));
 
         this.addSystem(new BeltSystem());
+
+        worldGen(this);
     }
 }
 

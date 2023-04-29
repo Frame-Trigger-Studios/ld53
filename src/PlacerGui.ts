@@ -98,7 +98,9 @@ class Placer extends GlobalSystem
                             entity = new Assembler("aaa", hex.x, hex.y);
                             break;
                         case 2:
-                            entity = new Miner("aaa", hex.x, hex.y);
+                            if (hex.terrain) {
+                                entity = new Miner("aaa", hex.x, hex.y);
+                            }
                             break;
                         case 3:
                             entity = new Belt("aaa", hex.x, hex.y);
@@ -108,6 +110,7 @@ class Placer extends GlobalSystem
                     if (entity)
                     {
                         entity = this.scene.addEntity(entity);
+                        entity.addComponent(new HexReference(hex));
                         hex.entity = entity;
                     }
                 } else

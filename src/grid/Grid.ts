@@ -7,7 +7,9 @@ export class CustomHex extends defineHex({
     orientation: Orientation.FLAT,
 }) {
     private capacity = 4;
+
     entity: Entity | null = null;
+    terrain: Entity | null = null;
 }
 
 export const GRID = new Grid(CustomHex, spiral({radius: 8}));

@@ -1,4 +1,5 @@
 import {Component, Entity, RenderCircle, Sprite} from "lagom-engine";
+import {CustomHex} from "./grid/Grid";
 
 export class GridObject extends Component
 {
@@ -8,6 +9,12 @@ export class GridObject extends Component
     }
 }
 
+export class HexReference extends Component
+{
+    constructor(readonly hex: CustomHex) {
+        super();
+    }
+}
 
 export class MatStorage extends Entity {
     onAdded()
@@ -25,6 +32,7 @@ export class Assembler extends Entity {
     }
 }
 export class Miner extends Entity {
+
     onAdded()
     {
         super.onAdded();

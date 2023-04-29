@@ -24,23 +24,15 @@ export class Belt extends Entity {
 }
 
 class BeltSpeed extends Component {
-
-    constructor(private rate: number) {
+    constructor(readonly rate: number) {
         super();
-
     }
-
-    getRate = (): number => {
-        return this.rate;
-    };
 }
 
 class Buffer extends Component {
 
-    constructor(private readonly limit: number, private amount: number = 0) {
+    constructor(readonly limit: number, public amount: number = 0) {
         super();
-        this.limit = limit;
-        this.amount = amount;
     }
 
     /**
@@ -60,7 +52,7 @@ class Buffer extends Component {
         }
     }
 
-    hasSpace(amount:number) {
+    hasSpace(amount: number) {
         return this.amount + amount <= this.limit;
     }
 
@@ -89,7 +81,7 @@ export class BeltSystem extends System<[InputBuffer, OutputBuffer, BeltSpeed]> {
         // Todo enforce tick
         this.runOnEntities((entity: Entity, input: InputBuffer, output: OutputBuffer, rate: BeltSpeed) => {
             if (input.get() > 0) {
-                const retrieved = input.removeAmount(rate.getRate());
+                const retrieved = input.removeAmount(rate.rate);
                 // The code looks good, much slower than before.
                 if (output.hasSpace(retrieved)) {
                     output.addAmount(retrieved);
