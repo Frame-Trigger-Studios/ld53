@@ -51,14 +51,14 @@ const createOrePatch = (scene: Scene, type: OrePatchType) => {
         const dir = randomEntry(DIRS);
         const neighbour = GRID.neighborOf(patch, dir, {allowOutside: false});
 
-        if (!neighbour || neighbour.entity) {
+        if (!neighbour || neighbour.terrain) {
             breakGlass--;
             continue;
         }
 
-        const entity = getOrePatch(type, neighbour.x, neighbour.y);
-        scene.addEntity(entity);
-        neighbour.entity = entity;
+        const orePatch = getOrePatch(type, neighbour.x, neighbour.y);
+        scene.addEntity(orePatch);
+        neighbour.terrain = orePatch;
         patch = neighbour;
         patches--;
     }
