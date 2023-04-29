@@ -16,20 +16,9 @@ export class HexGrid extends Entity {
         super.onAdded();
 
         this.grid.forEach(hex => {
-            this.getScene().addEntity(new SingleHex(hex));
+            this.addComponent(new RenderPoly(
+                hex.corners.map(cnr => new Point(cnr.x, cnr.y))
+            ));
         });
-    }
-}
-
-export class SingleHex extends Entity {
-
-    constructor(readonly hex: CustomHex) {
-        super(`SingleHex-${hex.x}-${hex.y}`);
-    }
-
-    onAdded() {
-        this.addComponent(new RenderPoly(
-            this.hex.corners.map(cnr => new Point(cnr.x, cnr.y))
-        ));
     }
 }
