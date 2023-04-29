@@ -120,20 +120,20 @@ class Placer extends GlobalSystem
                         // This is just straight up empty, trigger building placement.
                         let entity: Entity | null = null;
 
-                        switch (selected[0].idx)
-                        {
-                            case 0:
-                                entity = new MatStorage("storage", hex.x, hex.y);
-                                break;
-                            case 1:
-                                entity = new Assembler("assembler", hex.x, hex.y);
-                                break;
-                            case 2:
-                                if (hex.terrain)
-                                {
-                                    entity = new Miner("miner", hex.x, hex.y);
-                                }
-                                break;
+                        if (hex.terrain) {
+                            if (selected[0].idx === 2) {
+                                entity = new Miner("miner", hex.x, hex.y);
+                            }
+                        } else {
+                            switch (selected[0].idx)
+                            {
+                                case 0:
+                                    entity = new MatStorage("storage", hex.x, hex.y);
+                                    break;
+                                case 1:
+                                    entity = new Assembler("assembler", hex.x, hex.y);
+                                    break;
+                            }
                         }
 
                         if (entity)

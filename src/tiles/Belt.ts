@@ -23,7 +23,7 @@ export class Belt extends Entity {
     }
 }
 
-class BeltSpeed extends Component {
+export class BeltSpeed extends Component {
     constructor(readonly rate: number) {
         super();
     }
@@ -69,9 +69,9 @@ class Buffer extends Component {
     }
 }
 
-class InputBuffer extends Buffer {}
+export class InputBuffer extends Buffer {}
 
-class OutputBuffer extends Buffer {}
+export class OutputBuffer extends Buffer {}
 
 export class BeltSystem extends System<[InputBuffer, OutputBuffer, BeltSpeed]> {
 
