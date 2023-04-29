@@ -1,4 +1,3 @@
-import {Game, Scene} from 'lagom-engine';
 import {HexGrid} from "./grid/Grid";
 import {Camera, Entity, Game, GlobalSystem, Key, RenderCircle, Scene} from 'lagom-engine';
 import {Keyboard} from "lagom-engine/dist/Input/Keyboard";
@@ -11,6 +10,7 @@ class MainScene extends Scene
         this.addGlobalSystem(new CameraMover());
         this.addEntity(new Entity("smeting", 0, 0))
             .addComponent(new RenderCircle(0, 0, 20));
+
         this.addEntity(new HexGrid("Grid", 0, 0, 0));
     }
 }
