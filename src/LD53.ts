@@ -1,3 +1,4 @@
+import {HexGrid} from "./grid/Grid";
 import {Camera, Entity, Game, GlobalSystem, Key, RenderCircle, Scene} from 'lagom-engine';
 import {Assembler, MatStorage, Miner} from "./GridObject";
 import {PlacerGui} from "./PlacerGui";
@@ -12,6 +13,7 @@ class MainScene extends Scene
         this.addEntity(new Miner("miner", 120, 20));
         this.addEntity(new MatStorage("storage", 220, 20));
         this.addEntity(new Assembler("assembler", 320, 20));
+        this.addEntity(new HexGrid("Grid", 0, 0, 0));
     }
 }
 
@@ -37,11 +39,12 @@ export class CameraMover extends GlobalSystem {
 }
 
 
+
 export class LD53 extends Game
 {
-    static WINDOW_WIDTH = 512;
+    static WINDOW_WIDTH = 1280;
 
-    static WINDOW_HEIGHT = 512;
+    static WINDOW_HEIGHT = 800;
     constructor()
     {
         super({
