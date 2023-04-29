@@ -1,14 +1,17 @@
 import {Camera, Entity, Game, GlobalSystem, Key, RenderCircle, Scene} from 'lagom-engine';
-import {Keyboard} from "lagom-engine/dist/Input/Keyboard";
+import {Assembler, MatStorage, Miner} from "./GridObject";
+import {PlacerGui} from "./PlacerGui";
 
 class MainScene extends Scene
 {
     onAdded()
     {
         super.onAdded();
+        this.addGUIEntity(new PlacerGui());
         this.addGlobalSystem(new CameraMover());
-        this.addEntity(new Entity("smeting", 0, 0))
-            .addComponent(new RenderCircle(0, 0, 20));
+        this.addEntity(new Miner("miner", 120, 20));
+        this.addEntity(new MatStorage("storage", 220, 20));
+        this.addEntity(new Assembler("assembler", 320, 20));
     }
 }
 
@@ -36,11 +39,14 @@ export class CameraMover extends GlobalSystem {
 
 export class LD53 extends Game
 {
+    static WINDOW_WIDTH = 512;
+
+    static WINDOW_HEIGHT = 512;
     constructor()
     {
         super({
-            width: 512,
-            height: 512,
+            width: LD53.WINDOW_WIDTH,
+            height: LD53.WINDOW_HEIGHT,
             resolution: 1,
             backgroundColor: 0x200140
         });
