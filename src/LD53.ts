@@ -54,9 +54,9 @@ export class CameraMover extends GlobalSystem
 
 export class LD53 extends Game
 {
-    static WINDOW_WIDTH = 1280;
+    static WINDOW_WIDTH = 640;
 
-    static WINDOW_HEIGHT = 800;
+    static WINDOW_HEIGHT = 360;
 
     constructor()
     {
