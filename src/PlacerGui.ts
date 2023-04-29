@@ -97,21 +97,22 @@ class Placer extends GlobalSystem
                 if (hex.entity == null)
                 {
                     // Check if we are adjacent to `highlighted` which was selected last time we clicked
-                    if (this.highlighted)
+                    if (this.highlighted && GRID.distance(hex, this.highlighted) == 1)
                     {
-                        if (GRID.distance(hex, this.highlighted) == 1)
-                        {
-                            // Build a belt from highlighted -> hex
-                            const entity = this.scene.addEntity(new Belt("aaa", hex.x, hex.y));
-                            const dir = this.dirFor(hex, this.highlighted);
-                            entity.addConnection(dir);
-                            entity.addComponent(new HexReference(hex));
-                            hex.entity = entity;
-                            this.hilight(hex);
-                        }
+
+                        // Build a belt from highlighted -> hex
+                        const entity = this.scene.addEntity(new Belt("aaa", hex.x, hex.y));
+                        const dir = this.dirFor(hex, this.highlighted);
+                        entity.addConnection(dir);
+                        entity.addComponent(new HexReference(hex));
+                        hex.entity = entity;
+                        this.hilight(hex);
+
                     }
                     else
                     {
+                        this.clearHilighted();
+
                         // This is just straight up empty, trigger building placement.
                         let entity: Entity | null = null;
 
@@ -154,13 +155,20 @@ class Placer extends GlobalSystem
     private dirFor(hex1: CustomHex, hex2: CustomHex): number
     {
         const DIRS = [Direction.N, Direction.NE, Direction.SE, Direction.S, Direction.SW, Direction.NW];
-        for (let i = 0; i < DIRS.length; i++){
+        for (let i = 0; i < DIRS.length; i++)
+        {
             const dir = DIRS[i];
             const neighbour = GRID.neighborOf(hex1, dir, {allowOutside: false});
             if (neighbour?.equals(hex2)) return i;
         }
 
         return -1;
+    }
+
+    private clearHilighted()
+    {
+        this.highlighted = undefined;
+        this.scene.getEntityWithName("placements")?.destroy();
     }
 }
 
