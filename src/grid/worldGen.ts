@@ -49,6 +49,7 @@ const createOrePatch = (scene: Scene, type: OrePatchType) => {
 
     while (breakGlass > 0  && patches > 0) {
         const dir = randomEntry(DIRS);
+
         const neighbour = GRID.neighborOf(patch, dir, {allowOutside: false});
 
         if (!neighbour || neighbour.terrain) {

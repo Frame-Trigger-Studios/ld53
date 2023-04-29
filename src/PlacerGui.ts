@@ -1,6 +1,6 @@
 import {Button, Component, Entity, GlobalSystem, Key, Log, RenderCircle, RenderRect, System} from "lagom-engine";
 import {LD53} from "./LD53";
-import {Assembler, MatStorage, Miner} from "./GridObject";
+import {Assembler, HexReference, MatStorage, Miner} from "./GridObject";
 import {GRID} from "./grid/Grid";
 
 class Selected extends Component
@@ -52,6 +52,7 @@ class Placer extends GlobalSystem
 
                     if (entity) {
                         entity = this.scene.addEntity(entity);
+                        entity.addComponent(new HexReference(hex));
                         hex.entity = entity;
                     }
 
