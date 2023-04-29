@@ -123,19 +123,16 @@ class Placer extends GlobalSystem
                         switch (selected[0].idx)
                         {
                             case 0:
-                                entity = new MatStorage("aaa", hex.x, hex.y);
+                                entity = new MatStorage("storage", hex.x, hex.y);
                                 break;
                             case 1:
-                                entity = new Assembler("aaa", hex.x, hex.y);
+                                entity = new Assembler("assembler", hex.x, hex.y);
                                 break;
                             case 2:
                                 if (hex.terrain)
                                 {
-                                    entity = new Miner("aaa", hex.x, hex.y);
+                                    entity = new Miner("miner", hex.x, hex.y);
                                 }
-                                break;
-                            case 3:
-                                entity = new Belt("aaa", hex.x, hex.y);
                                 break;
                         }
 
@@ -206,10 +203,6 @@ class PlaceSelector extends System<[Selected, Highlight]>
             if (this.scene.game.keyboard.isKeyPressed(Key.Digit3))
             {
                 selected.idx = 2;
-            }
-            if (this.scene.game.keyboard.isKeyPressed(Key.Digit4))
-            {
-                selected.idx = 3;
             }
 
             rect.pixiObj.y = selected.idx * 30;
