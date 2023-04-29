@@ -1,10 +1,10 @@
 import {Component, Entity, System} from "lagom-engine";
 
-class Belt extends Entity {
+export class Belt extends Entity {
 
     onAdded() {
-        this.addComponent(new InputBuffer());
-        this.addComponent(new OutputBuffer());
+        this.addComponent(new InputBuffer(100, 99));
+        this.addComponent(new OutputBuffer(13, 0));
         this.addComponent(new BeltSpeed(4));
     }
 }
@@ -24,10 +24,12 @@ class BeltSpeed extends Component {
 
 class Buffer extends Component {
     private amount: number;
+    private limit: number;
 
-    constructor() {
+    constructor(limit: number, amount?: number) {
         super();
-        this.amount = 0;
+        this.limit = limit;
+        this.amount = amount ?? 0;
     }
 
     /**
@@ -47,8 +49,20 @@ class Buffer extends Component {
         }
     }
 
-    addAmount(reduction: number) {
-        this.amount += reduction;
+    hasSpace(amount:number) {
+        return this.amount + amount <= this.limit;
+    }
+
+    addAmount(addition: number) {
+        if (addition + this.amount > this.limit) {
+            this.amount = this.limit;
+        } else {
+            this.amount += addition;
+        }
+    }
+
+    get(): number {
+        return this.amount;
     }
 }
 
@@ -56,14 +70,23 @@ class InputBuffer extends Buffer {}
 
 class OutputBuffer extends Buffer {}
 
-class BeltSystem extends System<[InputBuffer, OutputBuffer, BeltSpeed]> {
+export class BeltSystem extends System<[InputBuffer, OutputBuffer, BeltSpeed]> {
 
     types = () => [InputBuffer, OutputBuffer, BeltSpeed];
 
     update(delta: number) {
         // Todo enforce tick
         this.runOnEntities((entity: Entity, input: InputBuffer, output: OutputBuffer, rate: BeltSpeed) => {
-            output.addAmount(input.removeAmount(rate.getRate()));
+            if (input.get() > 0) {
+                const retrieved = input.removeAmount(rate.getRate());
+                // The code looks good, much slower than before.
+                if (output.hasSpace(retrieved)) {
+                    output.addAmount(retrieved);
+                    console.log(`Transferred ${retrieved} items from input to output: Input[${input.get()}] Output[${output.get()}]`);
+                } else {
+                    input.addAmount(retrieved);
+                }
+            }
         });
     }
 }
