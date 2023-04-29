@@ -1,4 +1,4 @@
-import {Component, Entity, RenderCircle} from "lagom-engine";
+import {Component, Entity, RenderCircle, Sprite} from "lagom-engine";
 
 export class GridObject extends Component
 {
@@ -13,7 +13,8 @@ export class MatStorage extends Entity {
     onAdded()
     {
         super.onAdded();
-        this.addComponent(new RenderCircle(0, 0, 10, 0xFF0000));
+        // this.addComponent(new RenderCircle(0, 0, 10, 0xFF0000));
+        this.addComponent(new Sprite(this.scene.game.getResource("orange").textureFromIndex(0), {xOffset: -16, yOffset: -16}));
     }
 }
 export class Assembler extends Entity {
