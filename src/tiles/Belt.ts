@@ -1,21 +1,33 @@
-import {Component, Entity, System} from "lagom-engine";
+import {Component, Entity, RenderCircle, Sprite, System} from "lagom-engine";
+
+export class Connections extends Component {
+    constructor(public dirs: number[] = [])
+    {
+        super();
+    }
+}
 
 export class Belt extends Entity {
 
     onAdded() {
         super.onAdded();
+        this.addComponent(new Connections());
         this.addComponent(new InputBuffer(100, 99));
         this.addComponent(new OutputBuffer(13, 0));
         this.addComponent(new BeltSpeed(4));
     }
+
+    addConnection(dir: number) {
+        this.getComponent<Connections>(Connections)?.dirs.push(dir);
+        this.addComponent(new Sprite(this.scene.game.getResource("belt").textureFromIndex(dir), {xOffset: -16, yOffset: -16}));
+    }
 }
 
 class BeltSpeed extends Component {
-    private rate: number;
 
-    constructor(rate: number) {
+    constructor(private rate: number) {
         super();
-        this.rate = rate;
+
     }
 
     getRate = (): number => {
@@ -24,13 +36,11 @@ class BeltSpeed extends Component {
 }
 
 class Buffer extends Component {
-    private amount: number;
-    private limit: number;
 
-    constructor(limit: number, amount?: number) {
+    constructor(private readonly limit: number, private amount: number = 0) {
         super();
         this.limit = limit;
-        this.amount = amount ?? 0;
+        this.amount = amount;
     }
 
     /**
