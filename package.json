@@ -12,6 +12,7 @@
     "lint:fix": "eslint src/**/*.ts --fix"
   },
   "dependencies": {
+    "honeycomb-grid": "^4.0.1",
     "lagom-engine": "^1.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -28,9 +29,9 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "@types/reactstrap": "^8.0.4",
     "@types/react": "^16.8.10",
     "@types/react-dom": "^16.8.3",
+    "@types/reactstrap": "^8.0.4",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
     "eslint": "^7.24.0",

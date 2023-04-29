@@ -3,9 +3,9 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import './App.css';
 import {LagomGameComponent} from "lagom-engine";
-import {Pong} from "./Pong";
+import {LD53} from "./LD53";
 
-const game = new Pong();
+const game = new LD53();
 
 const App = () => (
     <div style={{display: "flex", height: "100%", alignItems: "center", justifyContent: "center"}}>
