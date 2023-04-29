@@ -3,6 +3,7 @@ import {Camera, Entity, Game, GlobalSystem, Key, RenderCircle, Scene} from 'lago
 import {Assembler, MatStorage, Miner} from "./GridObject";
 import {PlacerGui} from "./PlacerGui";
 import {Belt, BeltSystem} from "./tiles/Belt";
+import {worldGen} from "./grid/worldGen";
 
 class MainScene extends Scene
 {
@@ -20,6 +21,8 @@ class MainScene extends Scene
         this.addEntity(new Belt("b1"));
 
         this.addSystem(new BeltSystem());
+
+        worldGen(this);
     }
 }
 
