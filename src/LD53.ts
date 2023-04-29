@@ -8,6 +8,7 @@ class MainScene extends Scene
 {
     onAdded()
     {
+        this.camera.translate(-LD53.WINDOW_WIDTH / 2, -LD53.WINDOW_HEIGHT / 2);
         super.onAdded();
         this.addGUIEntity(new PlacerGui());
         this.addGlobalSystem(new CameraMover());
