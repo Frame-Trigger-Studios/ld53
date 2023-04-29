@@ -1,4 +1,5 @@
 import {Game, Scene} from 'lagom-engine';
+import {HexGrid} from "./grid/Grid";
 
 class MainScene extends Scene
 {
@@ -6,8 +7,10 @@ class MainScene extends Scene
     {
         super.onAdded();
 
+        this.addEntity(new HexGrid("Grid", 0, 0, 0));
     }
 }
+
 
 
 export class LD53 extends Game
@@ -15,8 +18,8 @@ export class LD53 extends Game
     constructor()
     {
         super({
-            width: 512,
-            height: 512,
+            width: 1280,
+            height: 800,
             resolution: 1,
             backgroundColor: 0x200140
         });
