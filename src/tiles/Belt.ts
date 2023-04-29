@@ -3,6 +3,7 @@ import {Component, Entity, System} from "lagom-engine";
 export class Belt extends Entity {
 
     onAdded() {
+        super.onAdded();
         this.addComponent(new InputBuffer(100, 99));
         this.addComponent(new OutputBuffer(13, 0));
         this.addComponent(new BeltSpeed(4));

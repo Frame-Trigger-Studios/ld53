@@ -1,9 +1,9 @@
-import {defineHex, Grid, Orientation, rectangle, spiral} from 'honeycomb-grid';
-import {Entity, RenderPoly, RenderRect} from "lagom-engine";
+import {defineHex, Grid, Orientation, spiral} from 'honeycomb-grid';
+import {Entity, RenderPoly} from "lagom-engine";
 import {Point} from "pixi.js";
 
 export class CustomHex extends defineHex({
-    dimensions: 30,
+    dimensions: 16,
     orientation: Orientation.FLAT,
 
 }) {
