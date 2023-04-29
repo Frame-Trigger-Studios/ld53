@@ -1,7 +1,20 @@
-import {Button, Component, Entity, GlobalSystem, Key, Log, RenderCircle, RenderRect, System} from "lagom-engine";
+import {
+    Button,
+    Component,
+    Entity,
+    GlobalSystem,
+    Key,
+    Log,
+    RenderCircle,
+    RenderRect,
+    Sprite,
+    System
+} from "lagom-engine";
 import {LD53} from "./LD53";
 import {Assembler, HexReference, MatStorage, Miner} from "./GridObject";
-import {GRID} from "./grid/Grid";
+import {CustomHex, GRID} from "./grid/Grid";
+import {Belt} from "./tiles/Belt";
+import {Direction} from "honeycomb-grid";
 
 class Selected extends Component
 {
@@ -11,13 +24,48 @@ class Selected extends Component
     }
 }
 
+class SelectedHex extends Component
+{
+
+}
+
 class Highlight extends RenderRect
 {
 
 }
 
+class ValidPlacements extends Entity
+{
+    constructor(readonly center: CustomHex)
+    {
+        super("placements", center.x, center.y);
+    }
+
+    onAdded()
+    {
+        super.onAdded();
+        // Add valid placement indicators around this one, if the spaces are free.
+        // this.center.
+        const DIRS = [Direction.N, Direction.NE, Direction.SE, Direction.S, Direction.SW, Direction.NW];
+        for (const dir of DIRS)
+        {
+            const neighbour = GRID.neighborOf(this.center, dir, {allowOutside: false});
+            if (neighbour && neighbour?.entity == null)
+            {
+                const option = this.addChild(new Entity("option", neighbour.x - this.transform.x, neighbour.y - this.transform.y));
+                    option.addComponent(new Sprite(this.scene.game.getResource("blue").textureFromIndex(0), {
+                        xOffset: -16,
+                        yOffset: -16
+                    }));
+            }
+        }
+    }
+}
+
 class Placer extends GlobalSystem
 {
+    private highlighted: CustomHex | undefined = undefined;
+
     types = () => [Selected];
 
     update(delta: number): void
@@ -33,7 +81,11 @@ class Placer extends GlobalSystem
 
                 const hex = GRID.pointToHex(mousePos, {allowOutside: false});
 
-                if (hex && hex.entity == null) {
+                if (!hex) return;
+
+                // Empty space, we want to put a building down
+                if (hex.entity == null)
+                {
 
                     let entity: Entity | null = null;
 
@@ -50,19 +102,41 @@ class Placer extends GlobalSystem
                                 entity = new Miner("aaa", hex.x, hex.y);
                             }
                             break;
+                        case 3:
+                            entity = new Belt("aaa", hex.x, hex.y);
+                            break;
                     }
 
-                    if (entity) {
+                    if (entity)
+                    {
                         entity = this.scene.addEntity(entity);
                         entity.addComponent(new HexReference(hex));
                         hex.entity = entity;
                     }
-
+                } else
+                {
+                    // Something is already here, select it for road placement purposes.
+                    this.highlighted = hex;
+                    this.scene.getEntityWithName("placements")?.destroy();
+                    this.scene.addEntity(new ValidPlacements(hex));
+                    Log.info("we have chosen", this.highlighted);
                 }
             });
         }
     }
 
+}
+
+export class BeltPlacer extends System<[Selected]>
+{
+    types = () => [Selected];
+
+    update(delta: number): void
+    {
+        this.runOnEntities((e, selected) => {
+            selected.idx = 3;
+        });
+    }
 }
 
 class PlaceSelector extends System<[Selected, Highlight]>
@@ -83,6 +157,10 @@ class PlaceSelector extends System<[Selected, Highlight]>
             if (this.scene.game.keyboard.isKeyPressed(Key.Digit3))
             {
                 selected.idx = 2;
+            }
+            if (this.scene.game.keyboard.isKeyPressed(Key.Digit4))
+            {
+                selected.idx = 3;
             }
 
             rect.pixiObj.y = selected.idx * 30;

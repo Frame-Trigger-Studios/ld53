@@ -4,6 +4,8 @@ import {PlacerGui} from "./PlacerGui";
 import {Belt, BeltSystem} from "./tiles/Belt";
 import {worldGen} from "./grid/worldGen";
 import orangeSpr from "./Art/orange.png";
+import blueSpr from "./Art/blue.png";
+import beltSpr from "./Art/belt.png";
 
 class MainScene extends Scene
 {
@@ -71,6 +73,8 @@ export class LD53 extends Game
         });
 
         this.addResource("orange", new SpriteSheet(orangeSpr, 32, 32));
+        this.addResource("blue", new SpriteSheet(blueSpr, 32, 32));
+        this.addResource("belt", new SpriteSheet(beltSpr, 32, 32));
         this.setScene(new MainScene(this));
     }
 }
