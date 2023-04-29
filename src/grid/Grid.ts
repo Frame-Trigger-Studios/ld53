@@ -1,16 +1,17 @@
-import {defineHex, Grid, Orientation, rectangle} from 'honeycomb-grid';
+import {defineHex, Grid, Orientation, rectangle, spiral} from 'honeycomb-grid';
 import {Entity, RenderPoly, RenderRect} from "lagom-engine";
 import {Point} from "pixi.js";
 
 export class CustomHex extends defineHex({
     dimensions: 30,
     orientation: Orientation.FLAT,
+
 }) {
     private capacity = 4;
-    private entity: Entity | null = null;
+    entity: Entity | null = null;
 }
 
-export const GRID = new Grid(CustomHex, rectangle({width: 10, height: 10}));
+export const GRID = new Grid(CustomHex, spiral({radius: 6}));
 
 export class HexGrid extends Entity {
 

@@ -1,6 +1,7 @@
 import {Button, Component, Entity, GlobalSystem, Key, Log, RenderCircle, RenderRect, System} from "lagom-engine";
 import {LD53} from "./LD53";
 import {Assembler, MatStorage, Miner} from "./GridObject";
+import {GRID} from "./grid/Grid";
 
 class Selected extends Component
 {
@@ -30,19 +31,30 @@ class Placer extends GlobalSystem
                 const my = this.scene.game.mouse.getPosY();
                 const mousePos = this.scene.camera.viewToWorld(mx, my);
 
-                // TODO normalize mouse pos
-                // TODO look up grid position, see if anything is there.
-                switch (selected[0].idx)
-                {
-                    case 0:
-                        this.scene.addEntity(new MatStorage("aaa", mousePos.x, mousePos.y));
-                        break;
-                    case 1:
-                        this.scene.addEntity(new Assembler("aaa", mousePos.x, mousePos.y));
-                        break;
-                    case 2:
-                        this.scene.addEntity(new Miner("aaa", mousePos.x, mousePos.y));
-                        break;
+                const hex = GRID.pointToHex(mousePos, {allowOutside: false});
+
+                if (hex && hex.entity == null) {
+
+                    let entity: Entity | null = null;
+
+                    switch (selected[0].idx)
+                    {
+                        case 0:
+                            entity = new MatStorage("aaa", hex.x, hex.y);
+                            break;
+                        case 1:
+                            entity = new Assembler("aaa", hex.x, hex.y);
+                            break;
+                        case 2:
+                            entity = new Miner("aaa", hex.x, hex.y);
+                            break;
+                    }
+
+                    if (entity) {
+                        entity = this.scene.addEntity(entity);
+                        hex.entity = entity;
+                    }
+
                 }
             });
         }
