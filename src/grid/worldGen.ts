@@ -1,7 +1,6 @@
 import {Entity, RenderCircle, Scene} from "lagom-engine";
 import {GRID} from "./Grid";
 import {Direction} from "honeycomb-grid";
-import {Point} from "pixi.js";
 
 enum OrePatchType {
     ZERO,
@@ -39,25 +38,29 @@ export const worldGen = (scene: Scene) => {
     createOrePatch(scene, OrePatchType.ONE);
 };
 
+const DIRS = [Direction.N, Direction.NE, Direction.SE, Direction.S, Direction.SW, Direction.NW];
+
 const createOrePatch = (scene: Scene, type: OrePatchType) => {
 
-    const patch = randomEntry(GRID.toArray());
+    let patch = randomEntry(GRID.toArray());
 
-    const entity = getOrePatch(type, patch.x, patch.y);
-    scene.addEntity(entity);
-    patch.entity = entity;
+    let breakGlass = 20;
+    let patches = 4;
 
-    const dirs = [Direction.N, Direction.NE, Direction.SE, Direction.S, Direction.SW, Direction.NW];
-
-    for (let i = 0; i < 3; i++) {
-        const dir = randomEntry(dirs);
+    while (breakGlass > 0  && patches > 0) {
+        const dir = randomEntry(DIRS);
         const neighbour = GRID.neighborOf(patch, dir, {allowOutside: false});
 
-        if (!neighbour || neighbour.entity) continue;
+        if (!neighbour || neighbour.entity) {
+            breakGlass--;
+            continue;
+        }
 
         const entity = getOrePatch(type, neighbour.x, neighbour.y);
         scene.addEntity(entity);
         neighbour.entity = entity;
+        patch = neighbour;
+        patches--;
     }
 };
 
