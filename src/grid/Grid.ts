@@ -5,13 +5,12 @@ import {Point} from "pixi.js";
 export class CustomHex extends defineHex({
     dimensions: 30,
     orientation: Orientation.FLAT,
-
 }) {
     private capacity = 4;
     entity: Entity | null = null;
 }
 
-export const GRID = new Grid(CustomHex, spiral({radius: 6}));
+export const GRID = new Grid(CustomHex, spiral({radius: 8}));
 
 export class HexGrid extends Entity {
 
