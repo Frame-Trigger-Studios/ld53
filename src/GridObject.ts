@@ -71,7 +71,11 @@ export class MatMover extends System<[MoveMe]>
     {
         this.runOnEntities((entity, moveMe) => {
             // Translate towards destination.
-            if (moveMe.dest == null) return;
+            if (moveMe.dest == null)
+            {
+                entity.destroy();
+                return;
+            }
 
             if (MathUtil.pointDistance(entity.transform.x, entity.transform.y, moveMe.dest.x, moveMe.dest.y) < 1)
             {
@@ -88,7 +92,11 @@ export class MatMover extends System<[MoveMe]>
                 }
             }
 
-            if (moveMe.dest == null) return;
+            if (moveMe.dest == null)
+            {
+                entity.destroy();
+                return;
+            }
 
             const xMove = moveMe.dest.x - moveMe.x;
             const yMove = moveMe.dest.y - moveMe.y;
