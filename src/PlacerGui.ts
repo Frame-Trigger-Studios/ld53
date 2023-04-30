@@ -11,7 +11,7 @@ import {
     System
 } from "lagom-engine";
 import {Layers, LD53} from "./LD53";
-import {AllowInput, Assembler, HexReference, MatStorage, Miner} from "./GridObject";
+import {AllowInput, Assembler, HexReference, MatType, Miner} from "./GridObject";
 import {CustomHex, GRID} from "./grid/Grid";
 import {Belt} from "./tiles/Belt";
 import {Direction} from "honeycomb-grid";
@@ -103,7 +103,8 @@ class Placer extends GlobalSystem
                         let destEntity = chosenHex.entity;
                         if (destEntity == null)
                         {
-                            destEntity = chosenHex.entity ?? this.scene.addEntity(new Belt("aaa", chosenHex.x, chosenHex.y, Layers.GridObject));
+                            destEntity = chosenHex.entity ??
+                                this.scene.addEntity(new Belt("aaa", chosenHex.x, chosenHex.y, Layers.GridObject));
                         }
                         chosenHex.entity = destEntity;
 
@@ -128,7 +129,8 @@ class Placer extends GlobalSystem
                         {
                             this.clearHighlighted();
                         }
-                    } else
+                    }
+                    else
                     {
                         this.clearHighlighted();
 
@@ -139,19 +141,29 @@ class Placer extends GlobalSystem
                         {
                             switch (selected[0].idx)
                             {
+                                case 0:
+                                    entity = new Miner(chosenHex, MatType.RED);
+                                    break;
+                                case 1:
+                                    entity = new Miner(chosenHex, MatType.BLUE);
+                                    break;
                                 case 2:
-                                    entity = new Miner(chosenHex);
+                                    entity = new Miner(chosenHex, MatType.YELLOW);
                                     break;
                             }
-                        } else
+                        }
+                        else
                         {
                             switch (selected[0].idx)
                             {
-                                case 0:
-                                    entity = new MatStorage("storage", chosenHex.x, chosenHex.y, Layers.GridObject);
+                                case 3:
+                                    entity = new Assembler(chosenHex, MatType.PURPLE);
                                     break;
-                                case 1:
-                                    entity = new Assembler("assembler", chosenHex.x, chosenHex.y, Layers.GridObject);
+                                case 4:
+                                    entity = new Assembler(chosenHex, MatType.GREEN);
+                                    break;
+                                case 5:
+                                    entity = new Assembler(chosenHex, MatType.ORANGE);
                                     break;
                             }
                         }
@@ -163,7 +175,8 @@ class Placer extends GlobalSystem
                             chosenHex.entity = entity;
                         }
                     }
-                } else
+                }
+                else
                 {
                     // Something is already here, select it for belt placement purposes.
 

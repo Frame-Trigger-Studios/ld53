@@ -39,6 +39,11 @@ export class MatStorage extends Entity
 
 export class Assembler extends Entity
 {
+    constructor(readonly hex: CustomHex, readonly type: MatType)
+    {
+        super("ass", hex.x, hex.y, Layers.GridObject);
+    }
+
     onAdded()
     {
         super.onAdded();
@@ -50,7 +55,7 @@ export class Assembler extends Entity
 
 export class Miner extends Entity
 {
-    constructor(readonly hex: CustomHex)
+    constructor(readonly hex: CustomHex, readonly type: MatType)
     {
         super("miner", hex.x, hex.y, Layers.GridObject);
     }
@@ -58,12 +63,12 @@ export class Miner extends Entity
     onAdded()
     {
         super.onAdded();
-        this.addComponent(new RenderCircle(0, 0, 10, 0x00FF00));
+        this.addComponent(new RenderCircle(0, 0, 10, this.type));
         this.addComponent(new InputBuffer(100, 100));
         this.addComponent(new OutputBuffer(1, 0));
         this.addComponent(new BeltSpeed(1));
         this.addComponent(new Timer(2000, null, true)).onTrigger.register((caller) => {
-            this.scene.addEntity(new Mat(this.transform.x, this.transform.y, MatType.PURPLE, this.hex.dest));
+            this.scene.addEntity(new Mat(this.transform.x, this.transform.y, this.type, this.hex.dest));
         });
     }
 }
