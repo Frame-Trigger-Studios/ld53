@@ -2,6 +2,7 @@ import {Component, Entity, Log, MathUtil, RenderCircle, System, Timer} from "lag
 import {CustomHex, GRID} from "./grid/Grid";
 import {BeltSpeed, InputBuffer, OutputBuffer} from "./tiles/Belt";
 import {move} from "honeycomb-grid";
+import {Layers} from "./LD53";
 
 export class GridObject extends Component
 {
@@ -43,7 +44,7 @@ export class Miner extends Entity
 {
     constructor(readonly hex: CustomHex)
     {
-        super("miner", hex.x, hex.y);
+        super("miner", hex.x, hex.y, Layers.GridObject);
     }
 
     onAdded()
@@ -99,7 +100,7 @@ export class Mat extends Entity
 {
     constructor(x: number, y: number, readonly dest: CustomHex | null)
     {
-        super("mat1", x, y);
+        super("mat1", x, y, Layers.Item);
     }
 
     onAdded()

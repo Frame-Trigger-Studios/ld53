@@ -1,6 +1,7 @@
 import {Entity, RenderCircle, Scene} from "lagom-engine";
 import {GRID} from "./Grid";
 import {Direction} from "honeycomb-grid";
+import {Layers} from "../LD53";
 
 enum OrePatchType {
     ZERO,
@@ -10,9 +11,9 @@ enum OrePatchType {
 const getOrePatch = (type: OrePatchType, x: number, y: number) => {
     let entity: Entity;
     if (type == OrePatchType.ZERO) {
-        entity = new OrePatchZero("aaa", x, y);
+        entity = new OrePatchZero("aaa", x, y, Layers.Ore);
     } else {
-        entity = new OrePatchOne("aaa", x, y);
+        entity = new OrePatchOne("aaa", x, y, Layers.Ore);
     }
     return entity;
 };

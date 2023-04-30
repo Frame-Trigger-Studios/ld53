@@ -8,6 +8,17 @@ import blueSpr from "./Art/blue.png";
 import beltSpr from "./Art/belt.png";
 import {MatMover} from "./GridObject";
 
+export enum Layers
+{
+    Grid,
+    Ore,
+    GridObject,
+    Path,
+    Item,
+    Highlight,
+}
+
+
 class MainScene extends Scene
 {
     onAdded()
@@ -19,9 +30,9 @@ class MainScene extends Scene
         this.addGlobalSystem(new TimerSystem());
         this.addSystem(new MatMover());
 
-        this.addEntity(new HexGrid("Grid", 0, 0, 0));
+        this.addEntity(new HexGrid("Grid", 0, 0, Layers.Grid));
 
-        this.addEntity(new Belt("b1"));
+        // this.addEntity(new Belt("b1"));
 
         this.addSystem(new BeltSystem());
 
@@ -38,12 +49,12 @@ export class CameraMover extends GlobalSystem
     update(delta: number): void
     {
         if (this.scene.game.mouse.getPosX())
-
-
+        {
             if (this.scene.game.keyboard.isKeyDown(Key.KeyA))
             {
                 this.scene.camera.translate(-this.moveSpeed * delta / 1000, 0);
             }
+        }
         if (this.scene.game.keyboard.isKeyDown(Key.KeyD))
         {
             this.scene.camera.translate(this.moveSpeed * delta / 1000, 0);

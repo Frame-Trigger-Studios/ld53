@@ -10,7 +10,7 @@ import {
     Sprite,
     System
 } from "lagom-engine";
-import {LD53} from "./LD53";
+import {Layers, LD53} from "./LD53";
 import {Assembler, HexReference, MatStorage, Miner} from "./GridObject";
 import {CustomHex, GRID} from "./grid/Grid";
 import {Belt} from "./tiles/Belt";
@@ -38,7 +38,7 @@ class ValidPlacements extends Entity
 {
     constructor(readonly center: CustomHex)
     {
-        super("placements", center.x, center.y);
+        super("placements", center.x, center.y, Layers.Highlight);
     }
 
     onAdded()
@@ -53,7 +53,8 @@ class ValidPlacements extends Entity
             if (neighbour && neighbour?.entity == null)
             {
                 const option = this.addChild(
-                    new Entity("option", neighbour.x - this.transform.x, neighbour.y - this.transform.y));
+                    new Entity("option", neighbour.x - this.transform.x, neighbour.y - this.transform.y,
+                        Layers.Highlight));
                 option.addComponent(new Sprite(this.scene.game.getResource("blue").textureFromIndex(0), {
                     xOffset: -16,
                     yOffset: -16
@@ -100,7 +101,7 @@ class Placer extends GlobalSystem
                     if (this.highlighted && GRID.distance(hex, this.highlighted) == 1)
                     {
                         // Build a belt from highlighted -> hex
-                        const entity = this.scene.addEntity(new Belt("aaa", hex.x, hex.y));
+                        const entity = this.scene.addEntity(new Belt("aaa", hex.x, hex.y, Layers.GridObject));
                         const dir = this.dirFor(hex, this.highlighted);
                         this.highlighted.dest = hex;
                         entity.addConnection(dir);
@@ -120,18 +121,22 @@ class Placer extends GlobalSystem
                         // This is just straight up empty, trigger building placement.
                         let entity: Entity | null = null;
 
-                        if (hex.terrain) {
-                            if (selected[0].idx === 2) {
+                        if (hex.terrain)
+                        {
+                            if (selected[0].idx === 2)
+                            {
                                 entity = new Miner(hex);
                             }
-                        } else {
+                        }
+                        else
+                        {
                             switch (selected[0].idx)
                             {
                                 case 0:
-                                    entity = new MatStorage("storage", hex.x, hex.y);
+                                    entity = new MatStorage("storage", hex.x, hex.y, Layers.GridObject);
                                     break;
                                 case 1:
-                                    entity = new Assembler("assembler", hex.x, hex.y);
+                                    entity = new Assembler("assembler", hex.x, hex.y, Layers.GridObject);
                                     break;
                             }
                         }
