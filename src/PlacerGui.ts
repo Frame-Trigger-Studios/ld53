@@ -90,7 +90,7 @@ class Placer extends GlobalSystem
 
                 const hex = GRID.pointToHex(mousePos, {allowOutside: false});
 
-                // Ivalid position.
+                // Invalid position.
                 if (!hex) return;
 
                 // Empty space
@@ -99,7 +99,6 @@ class Placer extends GlobalSystem
                     // Check if we are adjacent to `highlighted` which was selected last time we clicked
                     if (this.highlighted && GRID.distance(hex, this.highlighted) == 1)
                     {
-
                         // Build a belt from highlighted -> hex
                         const entity = this.scene.addEntity(new Belt("aaa", hex.x, hex.y));
                         const dir = this.dirFor(hex, this.highlighted);
@@ -148,6 +147,10 @@ class Placer extends GlobalSystem
                 else
                 {
                     // Something is already here, select it for belt placement purposes.
+
+                    // Already has an outgoing connection
+                    if (hex?.dest != null) return;
+
                     this.highlight(hex);
                 }
             });
