@@ -1,9 +1,10 @@
 import {Component, Entity, Log, MathUtil, RenderCircle, System, Timer} from "lagom-engine";
-import {CustomHex, GRID} from "./grid/Grid";
-import {BeltSpeed, InputBuffer, OutputBuffer} from "./tiles/Belt";
-import {move} from "honeycomb-grid";
+import {CustomHex} from "./grid/Grid";
+import {Belt, BeltSpeed, InputBuffer, OutputBuffer} from "./tiles/Belt";
 import {Layers} from "./LD53";
+import {ResourceCount} from "./Inventory";
 
+export class AllowInput extends Component {}
 export class GridObject extends Component
 {
     constructor(readonly x: number, readonly y: number, readonly z: number)
@@ -25,6 +26,7 @@ export class MatStorage extends Entity
     onAdded()
     {
         super.onAdded();
+        this.addComponent(new AllowInput());
         this.addComponent(new RenderCircle(0, 0, 10, 0xFF0000));
         // this.addComponent(new Sprite(this.scene.game.getResource("orange").textureFromIndex(0), {xOffset: -16,
         // yOffset: -16}));
@@ -36,6 +38,7 @@ export class Assembler extends Entity
     onAdded()
     {
         super.onAdded();
+        this.addComponent(new AllowInput());
         this.addComponent(new RenderCircle(0, 0, 10, 0x0000FF));
     }
 }
@@ -55,7 +58,6 @@ export class Miner extends Entity
         this.addComponent(new OutputBuffer(1, 0));
         this.addComponent(new BeltSpeed(1));
         this.addComponent(new Timer(2000, null, true)).onTrigger.register((caller) => {
-            Log.info("spawning thingo");
             this.scene.addEntity(new Mat(this.transform.x, this.transform.y, this.hex.dest));
         });
     }
@@ -71,11 +73,19 @@ export class MatMover extends System<[MoveMe]>
             // Translate towards destination.
             if (moveMe.dest == null) return;
 
-            if (MathUtil.pointDistance(entity.transform.x,entity.transform.y, moveMe.dest.x, moveMe.dest.y) < 1) {
-                // Pick the next destination
-                moveMe.x = moveMe.dest.x;
-                moveMe.y = moveMe.dest.y;
-                moveMe.dest = moveMe.dest.dest;
+            if (MathUtil.pointDistance(entity.transform.x, entity.transform.y, moveMe.dest.x, moveMe.dest.y) < 1)
+            {
+                if (moveMe.dest.entity instanceof MatStorage)
+                {
+                    // consume it
+                    this.scene.getEntityWithName("inv")?.getComponent<ResourceCount>(ResourceCount)?.addMat(entity);
+                } else if (moveMe.dest.entity instanceof Belt)
+                {
+                    // Pick the next destination
+                    moveMe.x = moveMe.dest.x;
+                    moveMe.y = moveMe.dest.y;
+                    moveMe.dest = moveMe.dest.dest;
+                }
             }
 
             if (moveMe.dest == null) return;

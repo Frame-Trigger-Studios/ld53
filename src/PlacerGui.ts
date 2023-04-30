@@ -11,7 +11,7 @@ import {
     System
 } from "lagom-engine";
 import {Layers, LD53} from "./LD53";
-import {Assembler, HexReference, MatStorage, Miner} from "./GridObject";
+import {AllowInput, Assembler, HexReference, MatStorage, Miner} from "./GridObject";
 import {CustomHex, GRID} from "./grid/Grid";
 import {Belt} from "./tiles/Belt";
 import {Direction} from "honeycomb-grid";
@@ -89,54 +89,63 @@ class Placer extends GlobalSystem
                 const my = this.scene.game.mouse.getPosY();
                 const mousePos = this.scene.camera.viewToWorld(mx, my);
 
-                const hex = GRID.pointToHex(mousePos, {allowOutside: false});
+                const chosenHex = GRID.pointToHex(mousePos, {allowOutside: false});
 
                 // Invalid position.
-                if (!hex) return;
+                if (!chosenHex) return;
 
-                // Empty space
-                if (hex.entity == null)
+                // Empty space or awaiting connection
+                if (chosenHex.entity == null || chosenHex.entity.getComponent(AllowInput))
                 {
                     // Check if we are adjacent to `highlighted` which was selected last time we clicked
-                    if (this.highlighted && GRID.distance(hex, this.highlighted) == 1)
+                    if (this.highlighted && GRID.distance(chosenHex, this.highlighted) == 1)
                     {
+                        let destEntity = chosenHex.entity;
+                        if (destEntity == null)
+                        {
+                            destEntity = chosenHex.entity ?? this.scene.addEntity(new Belt("aaa", chosenHex.x, chosenHex.y, Layers.GridObject));
+                        }
+                        chosenHex.entity = destEntity;
+
                         // Build a belt from highlighted -> hex
-                        const entity = this.scene.addEntity(new Belt("aaa", hex.x, hex.y, Layers.GridObject));
-                        const dir = this.dirFor(hex, this.highlighted);
-                        this.highlighted.dest = hex;
-                        entity.addConnection(dir);
-                        entity.addComponent(new HexReference(hex));
+                        const dir = this.dirFor(chosenHex, this.highlighted);
+                        this.highlighted.dest = chosenHex;
+                        if (destEntity instanceof Belt)
+                        {
+                            destEntity.addConnection(dir);
+                            destEntity.addComponent(new HexReference(chosenHex));
+                        }
                         if (this.highlighted.entity instanceof Belt)
                         {
                             this.highlighted.entity.addConnection((dir + 3) % 6);
                         }
-                        hex.entity = entity;
-                        this.highlight(hex);
-
-                    }
-                    else
+                        if (destEntity instanceof Belt)
+                        {
+                            // highlight if non-terminating
+                            this.highlight(chosenHex);
+                        }
+                    } else
                     {
                         this.clearHighlighted();
 
                         // This is just straight up empty, trigger building placement.
                         let entity: Entity | null = null;
 
-                        if (hex.terrain)
+                        if (chosenHex.terrain)
                         {
                             if (selected[0].idx === 2)
                             {
-                                entity = new Miner(hex);
+                                entity = new Miner(chosenHex);
                             }
-                        }
-                        else
+                        } else
                         {
                             switch (selected[0].idx)
                             {
                                 case 0:
-                                    entity = new MatStorage("storage", hex.x, hex.y, Layers.GridObject);
+                                    entity = new MatStorage("storage", chosenHex.x, chosenHex.y, Layers.GridObject);
                                     break;
                                 case 1:
-                                    entity = new Assembler("assembler", hex.x, hex.y, Layers.GridObject);
+                                    entity = new Assembler("assembler", chosenHex.x, chosenHex.y, Layers.GridObject);
                                     break;
                             }
                         }
@@ -144,19 +153,18 @@ class Placer extends GlobalSystem
                         if (entity)
                         {
                             entity = this.scene.addEntity(entity);
-                            entity.addComponent(new HexReference(hex));
-                            hex.entity = entity;
+                            entity.addComponent(new HexReference(chosenHex));
+                            chosenHex.entity = entity;
                         }
                     }
-                }
-                else
+                } else
                 {
                     // Something is already here, select it for belt placement purposes.
 
                     // Already has an outgoing connection
-                    if (hex?.dest != null) return;
+                    if (chosenHex?.dest != null) return;
 
-                    this.highlight(hex);
+                    this.highlight(chosenHex);
                 }
             });
         }

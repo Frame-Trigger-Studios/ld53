@@ -1,12 +1,13 @@
 import {HexGrid} from "./grid/Grid";
-import {Game, GlobalSystem, Key, Scene, SpriteSheet, TimerSystem} from 'lagom-engine';
+import {Game, GlobalSystem, Key, Log, LogLevel, Scene, SpriteSheet, TimerSystem} from 'lagom-engine';
 import {PlacerGui} from "./PlacerGui";
-import {Belt, BeltSystem} from "./tiles/Belt";
+import {BeltSystem} from "./tiles/Belt";
 import {worldGen} from "./grid/worldGen";
 import orangeSpr from "./Art/orange.png";
 import blueSpr from "./Art/blue.png";
 import beltSpr from "./Art/belt.png";
 import {MatMover} from "./GridObject";
+import {Inventory} from "./Inventory";
 
 export enum Layers
 {
@@ -25,6 +26,7 @@ class MainScene extends Scene
     {
         this.camera.translate(-LD53.WINDOW_WIDTH / 2, -LD53.WINDOW_HEIGHT / 2);
         super.onAdded();
+        this.addEntity(new Inventory());
         this.addGUIEntity(new PlacerGui());
         this.addGlobalSystem(new CameraMover());
         this.addGlobalSystem(new TimerSystem());
@@ -85,6 +87,8 @@ export class LD53 extends Game
             resolution: 2,
             backgroundColor: 0x200140
         });
+
+        Log.logLevel = LogLevel.INFO;
 
         this.addResource("orange", new SpriteSheet(orangeSpr, 32, 32));
         this.addResource("blue", new SpriteSheet(blueSpr, 32, 32));
