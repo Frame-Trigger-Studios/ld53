@@ -1,11 +1,12 @@
 import {HexGrid} from "./grid/Grid";
-import {Game, GlobalSystem, Key, Scene, SpriteSheet} from 'lagom-engine';
+import {Game, GlobalSystem, Key, Scene, SpriteSheet, TimerSystem} from 'lagom-engine';
 import {PlacerGui} from "./PlacerGui";
 import {Belt, BeltSystem} from "./tiles/Belt";
 import {worldGen} from "./grid/worldGen";
 import orangeSpr from "./Art/orange.png";
 import blueSpr from "./Art/blue.png";
 import beltSpr from "./Art/belt.png";
+import {MatMover} from "./GridObject";
 
 class MainScene extends Scene
 {
@@ -15,6 +16,8 @@ class MainScene extends Scene
         super.onAdded();
         this.addGUIEntity(new PlacerGui());
         this.addGlobalSystem(new CameraMover());
+        this.addGlobalSystem(new TimerSystem());
+        this.addSystem(new MatMover());
 
         this.addEntity(new HexGrid("Grid", 0, 0, 0));
 

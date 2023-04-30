@@ -69,7 +69,7 @@ class Placer extends GlobalSystem
 
     types = () => [Selected];
 
-    hilight(hex: CustomHex): void
+    highlight(hex: CustomHex): void
     {
         this.highlighted = hex;
         this.scene.getEntityWithName("placements")?.destroy();
@@ -103,6 +103,7 @@ class Placer extends GlobalSystem
                         // Build a belt from highlighted -> hex
                         const entity = this.scene.addEntity(new Belt("aaa", hex.x, hex.y));
                         const dir = this.dirFor(hex, this.highlighted);
+                        this.highlighted.dest = hex;
                         entity.addConnection(dir);
                         entity.addComponent(new HexReference(hex));
                         if (this.highlighted.entity instanceof Belt)
@@ -110,19 +111,19 @@ class Placer extends GlobalSystem
                             this.highlighted.entity.addConnection((dir + 3) % 6);
                         }
                         hex.entity = entity;
-                        this.hilight(hex);
+                        this.highlight(hex);
 
                     }
                     else
                     {
-                        this.clearHilighted();
+                        this.clearHighlighted();
 
                         // This is just straight up empty, trigger building placement.
                         let entity: Entity | null = null;
 
                         if (hex.terrain) {
                             if (selected[0].idx === 2) {
-                                entity = new Miner("miner", hex.x, hex.y);
+                                entity = new Miner(hex);
                             }
                         } else {
                             switch (selected[0].idx)
@@ -147,7 +148,7 @@ class Placer extends GlobalSystem
                 else
                 {
                     // Something is already here, select it for belt placement purposes.
-                    this.hilight(hex);
+                    this.highlight(hex);
                 }
             });
         }
@@ -166,7 +167,7 @@ class Placer extends GlobalSystem
         return -1;
     }
 
-    private clearHilighted()
+    private clearHighlighted()
     {
         this.highlighted = undefined;
         this.scene.getEntityWithName("placements")?.destroy();

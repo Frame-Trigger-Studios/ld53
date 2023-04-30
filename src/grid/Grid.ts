@@ -10,6 +10,8 @@ export class CustomHex extends defineHex({
 
     entity: Entity | null = null;
     terrain: Entity | null = null;
+
+    dest: CustomHex | null = null;
 }
 
 export const GRID = new Grid(CustomHex, spiral({radius: 8}));

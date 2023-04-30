@@ -11,14 +11,14 @@ export class Belt extends Entity {
 
     onAdded() {
         super.onAdded();
-        this.addComponent(new Connections());
+        // this.addComponent(new Connections());
         this.addComponent(new InputBuffer(100, 99));
         this.addComponent(new OutputBuffer(13, 0));
         this.addComponent(new BeltSpeed(4));
     }
 
     addConnection(dir: number) {
-        this.getComponent<Connections>(Connections)?.dirs.push(dir);
+        // this.getComponent<Connections>(Connections)?.dirs.push(dir);
         this.addComponent(new Sprite(this.scene.game.getResource("belt").texture(dir, 0, 32, 32), {xOffset: -16, yOffset: -16}));
     }
 }
