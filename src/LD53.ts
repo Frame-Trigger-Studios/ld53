@@ -1,5 +1,5 @@
 import {HexGrid} from "./grid/Grid";
-import {Game, GlobalSystem, Key, Log, LogLevel, Scene, SpriteSheet, TimerSystem} from 'lagom-engine';
+import {AudioAtlas, Game, GlobalSystem, Key, Log, LogLevel, Scene, SpriteSheet, TimerSystem} from 'lagom-engine';
 import {PlacerGui} from "./PlacerGui";
 import {BeltSystem} from "./tiles/Belt";
 import {worldGen} from "./grid/worldGen";
@@ -8,6 +8,8 @@ import blueSpr from "./Art/blue.png";
 import beltSpr from "./Art/belt.png";
 import {MatMover} from "./GridObject";
 import {Inventory} from "./Inventory";
+
+import soundtrack from "./sound/LD53-music.mp3";
 
 export enum Layers
 {
@@ -79,6 +81,8 @@ export class LD53 extends Game
 
     static WINDOW_HEIGHT = 360;
 
+    static audioAtlas: AudioAtlas = new AudioAtlas();
+
     constructor()
     {
         super({
@@ -90,9 +94,16 @@ export class LD53 extends Game
 
         Log.logLevel = LogLevel.INFO;
 
+        const music = LD53.audioAtlas.load("music", soundtrack);
+        music.loop(true);
+        music.volume(0.25);
+
         this.addResource("orange", new SpriteSheet(orangeSpr, 32, 32));
         this.addResource("blue", new SpriteSheet(blueSpr, 32, 32));
         this.addResource("belt", new SpriteSheet(beltSpr, 32, 32));
         this.setScene(new MainScene(this));
+
+        LD53.audioAtlas.play("music");
+        this.resourceLoader.loadAll().then(() => console.log("Loaded resources"));
     }
 }
