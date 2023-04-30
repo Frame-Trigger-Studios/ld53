@@ -124,6 +124,10 @@ class Placer extends GlobalSystem
                             // highlight if non-terminating
                             this.highlight(chosenHex);
                         }
+                        else
+                        {
+                            this.clearHighlighted();
+                        }
                     } else
                     {
                         this.clearHighlighted();
