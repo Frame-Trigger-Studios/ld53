@@ -135,6 +135,11 @@ class Placer extends GlobalSystem
                     {
                         this.clearHighlighted();
 
+                        if (chosenHex.entity instanceof Assembler) {
+                            this.highlight(chosenHex);
+                            return;
+                        }
+
                         // This is just straight up empty, trigger building placement.
                         let entity: Entity | null = null;
 
@@ -192,7 +197,7 @@ class Placer extends GlobalSystem
                 else
                 {
                     // Something is already here, select it for belt placement purposes.
-
+                    Log.info(chosenHex);
                     // Already has an outgoing connection
                     if (chosenHex?.dest != null) return;
 
@@ -253,6 +258,19 @@ class PlaceSelector extends System<[Selected, Highlight]>
             {
                 selected.idx = 2;
             }
+            if (this.scene.game.keyboard.isKeyPressed(Key.Digit4))
+            {
+                selected.idx = 3;
+            }
+            if (this.scene.game.keyboard.isKeyPressed(Key.Digit5))
+            {
+                selected.idx = 4;
+            }
+            if (this.scene.game.keyboard.isKeyPressed(Key.Digit6))
+            {
+                selected.idx = 5;
+            }
+
 
             rect.pixiObj.y = selected.idx * 30;
         });
