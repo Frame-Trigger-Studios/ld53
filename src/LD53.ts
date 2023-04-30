@@ -26,7 +26,7 @@ class MainScene extends Scene
     {
         this.camera.translate(-LD53.WINDOW_WIDTH / 2, -LD53.WINDOW_HEIGHT / 2);
         super.onAdded();
-        this.addEntity(new Inventory());
+        this.addGUIEntity(new Inventory());
         this.addGUIEntity(new PlacerGui());
         this.addGlobalSystem(new CameraMover());
         this.addGlobalSystem(new TimerSystem());
