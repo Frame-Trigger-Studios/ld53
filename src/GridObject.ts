@@ -1,10 +1,13 @@
-import {Component, Entity, Log, MathUtil, RenderCircle, System, Timer} from "lagom-engine";
+import {Component, Entity, MathUtil, RenderCircle, System, Timer} from "lagom-engine";
 import {CustomHex} from "./grid/Grid";
 import {Belt, BeltSpeed, InputBuffer, OutputBuffer} from "./tiles/Belt";
 import {Layers} from "./LD53";
 import {ResourceCount} from "./Inventory";
 
-export class AllowInput extends Component {}
+export class AllowInput extends Component
+{
+}
+
 export class GridObject extends Component
 {
     constructor(readonly x: number, readonly y: number, readonly z: number)
@@ -59,7 +62,7 @@ export class Miner extends Entity
         this.addComponent(new OutputBuffer(1, 0));
         this.addComponent(new BeltSpeed(1));
         this.addComponent(new Timer(2000, null, true)).onTrigger.register((caller) => {
-            this.scene.addEntity(new Mat(this.transform.x, this.transform.y, this.hex.dest));
+            this.scene.addEntity(new Mat(this.transform.x, this.transform.y, MatType.PURPLE, this.hex.dest));
         });
     }
 }
@@ -115,9 +118,20 @@ class MoveMe extends Component
     }
 }
 
+export enum MatType
+{
+    RED = 0xFF0000,
+    BLUE = 0x0033CC,
+    YELLOW = 0xFFFF0,
+    PURPLE = 0x660099,
+    ORANGE = 0xff9900,
+    GREEN = 0x00cc00
+
+}
+
 export class Mat extends Entity
 {
-    constructor(x: number, y: number, readonly dest: CustomHex | null)
+    constructor(x: number, y: number, readonly colour: MatType, readonly initialDest: CustomHex | null)
     {
         super("mat1", x, y, Layers.Item);
     }
@@ -125,7 +139,7 @@ export class Mat extends Entity
     onAdded()
     {
         super.onAdded();
-        this.addComponent(new MoveMe(this.transform.x, this.transform.y, this.dest));
-        this.addComponent(new RenderCircle(0, 0, 4, 0xFFFFFF));
+        this.addComponent(new MoveMe(this.transform.x, this.transform.y, this.initialDest));
+        this.addComponent(new RenderCircle(0, 0, 4, this.colour, 0x000000));
     }
 }
