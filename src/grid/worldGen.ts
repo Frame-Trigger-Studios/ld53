@@ -1,24 +1,29 @@
-import {Entity, RenderCircle, Scene} from "lagom-engine";
+import {Entity, Log, RenderCircle, Scene} from "lagom-engine";
 import {GRID} from "./Grid";
 import {Direction} from "honeycomb-grid";
 import {Layers} from "../LD53";
+import {MatStorage} from "../GridObject";
 
-enum OrePatchType {
+enum OrePatchType
+{
     ZERO,
     ONE
 }
 
 const getOrePatch = (type: OrePatchType, x: number, y: number) => {
     let entity: Entity;
-    if (type == OrePatchType.ZERO) {
+    if (type == OrePatchType.ZERO)
+    {
         entity = new OrePatchZero("aaa", x, y, Layers.Ore);
-    } else {
+    } else
+    {
         entity = new OrePatchOne("aaa", x, y, Layers.Ore);
     }
     return entity;
 };
 
-export class OrePatchZero extends Entity {
+export class OrePatchZero extends Entity
+{
     onAdded()
     {
         super.onAdded();
@@ -26,7 +31,8 @@ export class OrePatchZero extends Entity {
     }
 }
 
-export class OrePatchOne extends Entity {
+export class OrePatchOne extends Entity
+{
     onAdded()
     {
         super.onAdded();
@@ -37,6 +43,10 @@ export class OrePatchOne extends Entity {
 export const worldGen = (scene: Scene) => {
     createOrePatch(scene, OrePatchType.ZERO);
     createOrePatch(scene, OrePatchType.ONE);
+
+    // put the rocket in the middle
+    const entity = scene.addEntity(new MatStorage("rocket", 0, 0, Layers.GridObject));
+    GRID.toArray()[0].entity = entity;
 };
 
 const DIRS = [Direction.N, Direction.NE, Direction.SE, Direction.S, Direction.SW, Direction.NW];
@@ -48,12 +58,14 @@ const createOrePatch = (scene: Scene, type: OrePatchType) => {
     let breakGlass = 20;
     let patches = 4;
 
-    while (breakGlass > 0  && patches > 0) {
+    while (breakGlass > 0 && patches > 0)
+    {
         const dir = randomEntry(DIRS);
 
         const neighbour = GRID.neighborOf(patch, dir, {allowOutside: false});
 
-        if (!neighbour || neighbour.terrain) {
+        if (!neighbour || neighbour.terrain)
+        {
             breakGlass--;
             continue;
         }
