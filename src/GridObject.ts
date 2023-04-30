@@ -47,6 +47,7 @@ export class Assembler extends Entity
     }
 }
 
+
 export class Miner extends Entity
 {
     constructor(readonly hex: CustomHex)
