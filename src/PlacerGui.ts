@@ -15,6 +15,7 @@ import {AllowInput, Assembler, HexReference, MatType, Miner} from "./GridObject"
 import {CustomHex, GRID} from "./grid/Grid";
 import {Belt} from "./tiles/Belt";
 import {Direction} from "honeycomb-grid";
+import {MatTypeHolder} from "./grid/worldGen";
 
 class Selected extends Component
 {
@@ -142,13 +143,25 @@ class Placer extends GlobalSystem
                             switch (selected[0].idx)
                             {
                                 case 0:
-                                    entity = new Miner(chosenHex, MatType.RED);
+                                    if (chosenHex.terrain.getComponent<MatTypeHolder>(MatTypeHolder)?.type ===
+                                        MatType.RED)
+                                    {
+                                        entity = new Miner(chosenHex, MatType.RED);
+                                    }
                                     break;
                                 case 1:
-                                    entity = new Miner(chosenHex, MatType.BLUE);
+                                    if (chosenHex.terrain.getComponent<MatTypeHolder>(MatTypeHolder)?.type ===
+                                        MatType.BLUE)
+                                    {
+                                        entity = new Miner(chosenHex, MatType.BLUE);
+                                    }
                                     break;
                                 case 2:
-                                    entity = new Miner(chosenHex, MatType.YELLOW);
+                                    if (chosenHex.terrain.getComponent<MatTypeHolder>(MatTypeHolder)?.type ===
+                                        MatType.YELLOW)
+                                    {
+                                        entity = new Miner(chosenHex, MatType.YELLOW);
+                                    }
                                     break;
                             }
                         }

@@ -1,16 +1,25 @@
-import {Entity, RenderCircle, Scene} from "lagom-engine";
+import {Component, Entity, RenderCircle, Scene} from "lagom-engine";
 import {GRID} from "./Grid";
 import {Direction} from "honeycomb-grid";
 import {Layers} from "../LD53";
 import {MatStorage, MatType} from "../GridObject";
 
 
+export class MatTypeHolder extends Component
+{
+    constructor(readonly type: MatType)
+    {
+        super();
+    }
+}
+
 export class OrePatchRed extends Entity
 {
     onAdded()
     {
         super.onAdded();
-        this.addComponent(new RenderCircle(0, 0, 10, MatType.RED));
+        this.addComponent(new MatTypeHolder(MatType.RED));
+        this.addComponent(new RenderCircle(0, 0, 10, null, MatType.RED));
     }
 }
 
@@ -19,7 +28,8 @@ export class OrePatchBlue extends Entity
     onAdded()
     {
         super.onAdded();
-        this.addComponent(new RenderCircle(0, 0, 10, MatType.BLUE));
+        this.addComponent(new MatTypeHolder(MatType.BLUE));
+        this.addComponent(new RenderCircle(0, 0, 10, null, MatType.BLUE));
     }
 }
 
@@ -28,7 +38,8 @@ export class OrePatchYellow extends Entity
     onAdded()
     {
         super.onAdded();
-        this.addComponent(new RenderCircle(0, 0, 10, MatType.YELLOW));
+        this.addComponent(new MatTypeHolder(MatType.YELLOW));
+        this.addComponent(new RenderCircle(0, 0, 10, null, MatType.YELLOW));
     }
 }
 
