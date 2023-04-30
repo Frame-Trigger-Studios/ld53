@@ -50,7 +50,7 @@ class ValidPlacements extends Entity
         for (const dir of DIRS)
         {
             const neighbour = GRID.neighborOf(this.center, dir, {allowOutside: false});
-            if (neighbour && neighbour?.entity == null)
+            if (neighbour && (neighbour?.entity == null || neighbour?.entity?.getComponent(AllowInput) != null))
             {
                 const option = this.addChild(
                     new Entity("option", neighbour.x - this.transform.x, neighbour.y - this.transform.y,
@@ -137,9 +137,11 @@ class Placer extends GlobalSystem
 
                         if (chosenHex.terrain)
                         {
-                            if (selected[0].idx === 2)
+                            switch (selected[0].idx)
                             {
-                                entity = new Miner(chosenHex);
+                                case 2:
+                                    entity = new Miner(chosenHex);
+                                    break;
                             }
                         } else
                         {

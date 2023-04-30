@@ -123,7 +123,7 @@ export enum MatType
 {
     RED = 0xFF0000,
     BLUE = 0x0033CC,
-    YELLOW = 0xFFFF0,
+    YELLOW = 0xFFFF00,
     PURPLE = 0x660099,
     ORANGE = 0xff9900,
     GREEN = 0x00cc00
@@ -134,7 +134,7 @@ export class Mat extends Entity
 {
     constructor(x: number, y: number, readonly colour: MatType, readonly initialDest: CustomHex | null)
     {
-        super("mat1", x, y, Layers.Item);
+        super(colour.toString(), x, y, Layers.Item);
     }
 
     onAdded()

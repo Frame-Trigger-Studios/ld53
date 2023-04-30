@@ -2,14 +2,14 @@ import {Component, Entity, System, TextDisp} from "lagom-engine";
 import {MatType} from "./GridObject";
 
 
-export const COSTS = {
-    "red-miner": [(MatType.RED, 1)],
-    "blue-miner": [(MatType.RED, 1)],
-    "yellow-miner": [(MatType.PURPLE, 1)],
-    "purple-assembler": [(MatType.RED, 1), (MatType.BLUE, 1)],
-    "orange-assembler": [(MatType.YELLOW, 1)],
-    "green-assembler": [(MatType.PURPLE, 1), (MatType.ORANGE, 1)],
-};
+// export const COSTS = {
+//     "red-miner": [(MatType.RED, 1)],
+//     "blue-miner": [(MatType.RED, 1)],
+//     "yellow-miner": [(MatType.PURPLE, 1)],
+//     "purple-assembler": [(MatType.RED, 1), (MatType.BLUE, 1)],
+//     "orange-assembler": [(MatType.YELLOW, 1)],
+//     "green-assembler": [(MatType.PURPLE, 1), (MatType.ORANGE, 1)],
+// };
 
 export class ResourceCount extends Component
 {

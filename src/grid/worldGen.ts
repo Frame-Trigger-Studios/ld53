@@ -1,48 +1,59 @@
-import {Entity, Log, RenderCircle, Scene} from "lagom-engine";
+import {Entity, RenderCircle, Scene} from "lagom-engine";
 import {GRID} from "./Grid";
 import {Direction} from "honeycomb-grid";
 import {Layers} from "../LD53";
-import {MatStorage} from "../GridObject";
+import {MatStorage, MatType} from "../GridObject";
 
-enum OrePatchType
+
+export class OrePatchRed extends Entity
 {
-    ZERO,
-    ONE
+    onAdded()
+    {
+        super.onAdded();
+        this.addComponent(new RenderCircle(0, 0, 10, MatType.RED));
+    }
 }
 
-const getOrePatch = (type: OrePatchType, x: number, y: number) => {
+export class OrePatchBlue extends Entity
+{
+    onAdded()
+    {
+        super.onAdded();
+        this.addComponent(new RenderCircle(0, 0, 10, MatType.BLUE));
+    }
+}
+
+export class OrePatchYellow extends Entity
+{
+    onAdded()
+    {
+        super.onAdded();
+        this.addComponent(new RenderCircle(0, 0, 10, MatType.YELLOW));
+    }
+}
+
+const getOrePatch = (type: MatType, x: number, y: number) => {
     let entity: Entity;
-    if (type == OrePatchType.ZERO)
+    switch (type)
     {
-        entity = new OrePatchZero("aaa", x, y, Layers.Ore);
-    } else
-    {
-        entity = new OrePatchOne("aaa", x, y, Layers.Ore);
+        default:
+        case MatType.RED:
+            entity = new OrePatchRed(type.toString(), x, y, Layers.Ore);
+            break;
+        case MatType.BLUE:
+            entity = new OrePatchBlue(type.toString(), x, y, Layers.Ore);
+            break;
+        case MatType.YELLOW:
+            entity = new OrePatchYellow(type.toString(), x, y, Layers.Ore);
+            break;
     }
     return entity;
 };
 
-export class OrePatchZero extends Entity
-{
-    onAdded()
-    {
-        super.onAdded();
-        this.addComponent(new RenderCircle(0, 0, 10, 0xFFFFFF));
-    }
-}
-
-export class OrePatchOne extends Entity
-{
-    onAdded()
-    {
-        super.onAdded();
-        this.addComponent(new RenderCircle(0, 0, 10, 0xFF00FF));
-    }
-}
-
 export const worldGen = (scene: Scene) => {
-    createOrePatch(scene, OrePatchType.ZERO);
-    createOrePatch(scene, OrePatchType.ONE);
+    createOrePatch(scene, MatType.RED);
+    createOrePatch(scene, MatType.BLUE);
+    createOrePatch(scene, MatType.YELLOW);
 
     // put the rocket in the middle
     const entity = scene.addEntity(new MatStorage("rocket", 0, 0, Layers.GridObject));
@@ -51,7 +62,7 @@ export const worldGen = (scene: Scene) => {
 
 const DIRS = [Direction.N, Direction.NE, Direction.SE, Direction.S, Direction.SW, Direction.NW];
 
-const createOrePatch = (scene: Scene, type: OrePatchType) => {
+const createOrePatch = (scene: Scene, type: MatType) => {
 
     let patch = randomEntry(GRID.toArray());
 
