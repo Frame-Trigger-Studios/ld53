@@ -115,7 +115,7 @@ export class Miner extends Entity
     onAdded()
     {
         super.onAdded();
-        this.addComponent(new RenderCircle(0, 0, 10, this.type));
+        this.addComponent(new RenderCircle(0, 0, 8, this.type, this.type));
         this.addComponent(new InputBuffer(100, 100));
         this.addComponent(new OutputBuffer(1, 0));
         this.addComponent(new BeltSpeed(1));

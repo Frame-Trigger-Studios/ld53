@@ -18,7 +18,7 @@ export enum Layers
     GridObject,
     Path,
     Item,
-    Highlight,
+    Highlight
 }
 
 
@@ -28,8 +28,8 @@ class MainScene extends Scene
     {
         this.camera.translate(-LD53.WINDOW_WIDTH / 2, -LD53.WINDOW_HEIGHT / 2);
         super.onAdded();
-        this.addGUIEntity(new Inventory());
         this.addGUIEntity(new PlacerGui());
+        this.addGUIEntity(new Inventory());
         this.addGlobalSystem(new CameraMover());
         this.addGlobalSystem(new TimerSystem());
         this.addSystem(new MatMover());

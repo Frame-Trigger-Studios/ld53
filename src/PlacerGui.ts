@@ -8,7 +8,8 @@ import {
     RenderCircle,
     RenderRect,
     Sprite,
-    System
+    System,
+    TextDisp
 } from "lagom-engine";
 import {Layers, LD53} from "./LD53";
 import {AllowInput, Assembler, HexReference, MatType, Miner} from "./GridObject";
@@ -16,6 +17,7 @@ import {CustomHex, GRID} from "./grid/Grid";
 import {Belt} from "./tiles/Belt";
 import {Direction} from "honeycomb-grid";
 import {MatTypeHolder} from "./grid/worldGen";
+import {ResourceCount} from "./Inventory";
 
 class Selected extends Component
 {
@@ -135,7 +137,8 @@ class Placer extends GlobalSystem
                     {
                         this.clearHighlighted();
 
-                        if (chosenHex.entity instanceof Assembler) {
+                        if (chosenHex.entity instanceof Assembler)
+                        {
                             this.highlight(chosenHex);
                             return;
                         }
@@ -277,6 +280,33 @@ class PlaceSelector extends System<[Selected, Highlight]>
     }
 }
 
+class Hint extends Component
+{
+}
+
+class CanPlaceColour extends System<[RenderCircle, TextDisp, Hint]>
+{
+    types = () => [RenderCircle, TextDisp, Hint];
+
+    update(delta: number): void
+    {
+        this.runOnEntities((entity, circle, text) => {
+            const count = entity.scene.getEntityWithName("inv")?.getComponent<ResourceCount>(ResourceCount);
+            if (count == null) return;
+
+            const colour = circle.pixiObj.fill.color;
+            const number = count.getCount(colour);
+
+            const req = +text.pixiObj.text;
+            if (number >= req) {
+                text.pixiObj.style.fill = "white";
+            } else {
+                text.pixiObj.style.fill = "red";
+            }
+        });
+    }
+}
+
 export class PlacerGui extends Entity
 {
     constructor()
@@ -284,25 +314,77 @@ export class PlacerGui extends Entity
         super("placer gui", 0, 0);
     }
 
+    cost(sx: number, r = 0, b = 0, y = 0, p = 0, g = 0, o = 0)
+    {
+        let offset = sx;
+
+        if (r)
+        {
+            this.cost2(offset, MatType.RED);
+            offset += 10;
+        }
+        if (b)
+        {
+            this.cost2(offset, MatType.BLUE);
+            offset += 10;
+        }
+        if (y)
+        {
+            this.cost2(offset, MatType.YELLOW);
+            offset += 10;
+        }
+        if (p)
+        {
+            this.cost2(offset, MatType.PURPLE);
+            offset += 10;
+        }
+        if (g)
+        {
+            this.cost2(offset, MatType.GREEN);
+            offset += 10;
+        }
+        if (o)
+        {
+            this.cost2(offset, MatType.ORANGE);
+        }
+    }
+
+    cost2(offset: number, type: MatType)
+    {
+        const e = this.addChild(new Entity("cost", 40, offset));
+        e.addComponent(new RenderCircle(0, 0, 3, type, type));
+        e.addComponent(new TextDisp(8, -7, "1", {fontSize: 10, fill: "white"}));
+        e.addComponent(new Hint());
+    }
+
     onAdded()
     {
         super.onAdded();
         this.scene.addSystem(new PlaceSelector());
         this.scene.addGlobalSystem(new Placer());
+        this.scene.addSystem(new CanPlaceColour());
         this.addComponent(new Selected());
-        this.addComponent(new RenderRect(0, 0, 30, LD53.WINDOW_HEIGHT, 0x000020));
+        this.addComponent(new RenderRect(0, 0, 60, LD53.WINDOW_HEIGHT, 0x000020, 0x000020));
 
-        // Mat storage
-        this.addComponent(new RenderCircle(15, 15, 10, 0xFF0000));
+        // red
+        this.addComponent(new RenderCircle(15, 15, 8, MatType.RED, MatType.RED));
+        this.cost(7, 1, 5);
 
-        // Assembler
-        this.addComponent(new RenderCircle(15, 45, 10, 0x0000FF));
+        // blue
+        this.addComponent(new RenderCircle(15, 45, 8, MatType.BLUE, MatType.BLUE));
 
-        // Miner
-        this.addComponent(new RenderCircle(15, 75, 10, 0x00FF00));
+        // yellow
+        this.addComponent(new RenderCircle(15, 75, 8, MatType.YELLOW, MatType.YELLOW));
+
+        // purple
+        this.addComponent(new RenderCircle(15, 105, 8, 0x0, MatType.PURPLE));
+
+        // green
+        this.addComponent(new RenderCircle(15, 135, 8, 0x0, MatType.GREEN));
+
+        // orange
+        this.addComponent(new RenderCircle(15, 165, 8, 0x0, MatType.ORANGE));
 
         this.addComponent(new Highlight(0, 0, 30, 30, null, 0x444444));
-
-
     }
 }
