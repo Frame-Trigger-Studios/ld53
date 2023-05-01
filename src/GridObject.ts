@@ -1,4 +1,4 @@
-import {Component, Entity, Log, MathUtil, RenderCircle, System, Timer} from "lagom-engine";
+import {Component, Entity, Log, MathUtil, RenderCircle, Sprite, System, Timer} from "lagom-engine";
 import {CustomHex} from "./grid/Grid";
 import {Belt, BeltSpeed, InputBuffer, OutputBuffer} from "./tiles/Belt";
 import {Layers} from "./LD53";
@@ -32,7 +32,7 @@ export class MatStorage extends Entity
     {
         super.onAdded();
         this.addComponent(new AllowInput());
-        this.addComponent(new RenderCircle(0, 0, 10, 0xFF0000));
+        this.addComponent(new RenderCircle(0, 0, 10, 0xAAFAFF, 0xAAFAFF));
         // this.addComponent(new Sprite(this.scene.game.getResource("orange").textureFromIndex(0), {xOffset: -16,
         // yOffset: -16}));
     }
