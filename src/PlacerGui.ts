@@ -152,7 +152,7 @@ class Placer extends GlobalSystem
                             {
                                 case 0:
                                     if (chosenHex.terrain.getComponent<MatTypeHolder>(MatTypeHolder)?.type ===
-                                        MatType.RED)
+                                        MatType.RED && this.payForIt(MatType.RED))
                                     {
                                         entity = new Miner(chosenHex, MatType.RED);
                                     }
@@ -228,7 +228,34 @@ class Placer extends GlobalSystem
         this.highlighted = undefined;
         this.scene.getEntityWithName("placements")?.destroy();
     }
+
+    private payForIt(mat: MatType): boolean
+    {
+        const inv = this.scene.getEntityWithName("inv")?.getComponent<ResourceCount>(ResourceCount);
+        if (!inv) return false;
+
+        // get the cost
+
+        return true;
+    }
 }
+
+class Costs
+{
+    constructor(readonly amts: Map<MatType, number>)
+    {
+    }
+}
+
+const COSTS = new Map<MatType, Costs>([
+    [MatType.RED, new Costs(new Map<MatType, number>([[MatType.RED, 5]]))],
+    [MatType.BLUE, new Costs(new Map<MatType, number>([[MatType.RED, 10]]))],
+    [MatType.YELLOW, new Costs(new Map<MatType, number>([[MatType.PURPLE, 20], [MatType.BLUE, 40]]))],
+    [MatType.PURPLE, new Costs(new Map<MatType, number>([[MatType.RED, 10], [MatType.BLUE, 10]]))],
+    [MatType.ORANGE, new Costs(new Map<MatType, number>([[MatType.YELLOW, 20], [MatType.PURPLE, 10]]))],
+    [MatType.GREEN, new Costs(new Map<MatType, number>([[MatType.PURPLE, 10], [MatType.ORANGE, 20]]))],
+]);
+
 
 export class BeltPlacer extends System<[Selected]>
 {
@@ -298,9 +325,12 @@ class CanPlaceColour extends System<[RenderCircle, TextDisp, Hint]>
             const number = count.getCount(colour);
 
             const req = +text.pixiObj.text;
-            if (number >= req) {
+            if (number >= req)
+            {
                 text.pixiObj.style.fill = "white";
-            } else {
+            }
+            else
+            {
                 text.pixiObj.style.fill = "red";
             }
         });
@@ -311,49 +341,27 @@ export class PlacerGui extends Entity
 {
     constructor()
     {
-        super("placer gui", 0, 0);
+        super("gui", 0, 0);
     }
 
-    cost(sx: number, r = 0, b = 0, y = 0, p = 0, g = 0, o = 0)
+    cost(sx: number, costs: Costs)
     {
         let offset = sx;
 
-        if (r)
+        for (const entry of Array.from(costs.amts.entries()))
         {
-            this.cost2(offset, MatType.RED);
+            const key = entry[0];
+            const value = entry[1];
+            this.cost2(offset, key, value);
             offset += 10;
-        }
-        if (b)
-        {
-            this.cost2(offset, MatType.BLUE);
-            offset += 10;
-        }
-        if (y)
-        {
-            this.cost2(offset, MatType.YELLOW);
-            offset += 10;
-        }
-        if (p)
-        {
-            this.cost2(offset, MatType.PURPLE);
-            offset += 10;
-        }
-        if (g)
-        {
-            this.cost2(offset, MatType.GREEN);
-            offset += 10;
-        }
-        if (o)
-        {
-            this.cost2(offset, MatType.ORANGE);
         }
     }
 
-    cost2(offset: number, type: MatType)
+    cost2(offset: number, type: MatType, value: number)
     {
         const e = this.addChild(new Entity("cost", 40, offset));
         e.addComponent(new RenderCircle(0, 0, 3, type, type));
-        e.addComponent(new TextDisp(8, -7, "1", {fontSize: 10, fill: "white"}));
+        e.addComponent(new TextDisp(8, -7, value.toString(), {fontSize: 10, fill: "white"}));
         e.addComponent(new Hint());
     }
 
@@ -368,23 +376,28 @@ export class PlacerGui extends Entity
 
         // red
         this.addComponent(new RenderCircle(15, 15, 8, MatType.RED, MatType.RED));
-        this.cost(7, 1, 5);
+        this.cost(7, COSTS.get(MatType.RED) as Costs);
 
         // blue
         this.addComponent(new RenderCircle(15, 45, 8, MatType.BLUE, MatType.BLUE));
+        this.cost(37, COSTS.get(MatType.BLUE) as Costs);
 
         // yellow
         this.addComponent(new RenderCircle(15, 75, 8, MatType.YELLOW, MatType.YELLOW));
+        this.cost(67, COSTS.get(MatType.YELLOW) as Costs);
 
         // purple
         this.addComponent(new RenderCircle(15, 105, 8, 0x0, MatType.PURPLE));
+        this.cost(97, COSTS.get(MatType.PURPLE) as Costs);
 
         // green
         this.addComponent(new RenderCircle(15, 135, 8, 0x0, MatType.GREEN));
+        this.cost(127, COSTS.get(MatType.GREEN) as Costs);
 
         // orange
         this.addComponent(new RenderCircle(15, 165, 8, 0x0, MatType.ORANGE));
+        this.cost(157, COSTS.get(MatType.ORANGE) as Costs);
 
-        this.addComponent(new Highlight(0, 0, 30, 30, null, 0x444444));
+        this.addComponent(new Highlight(1, 1, 58, 30, null, 0x444444));
     }
 }

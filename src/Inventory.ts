@@ -104,19 +104,4 @@ export class Inventory extends Entity
 
         this.scene.addSystem(new RenderInventory());
     }
-
-    buildMiner()
-    {
-        // check costs
-    }
-
-    buildStorage()
-    {
-        //
-    }
-
-    buildAssembler()
-    {
-        //
-    }
 }
