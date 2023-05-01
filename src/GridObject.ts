@@ -57,7 +57,11 @@ export class Assembler extends Entity
     {
         super.onAdded();
         this.addComponent(new AllowInput());
+        this.addComponent(new RenderCircle(0, 0, 10, 0x0, this.type));
         this.addComponent(new RenderCircle(0, 0, 8, 0x0, this.type));
+        this.addComponent(new RenderCircle(0, 0, 6, 0x0, this.type));
+        this.addComponent(new RenderCircle(0, 0, 4, 0x0, this.type));
+        this.addComponent(new RenderCircle(0, 0, 2, 0x0, this.type));
         this.componentAddedEvent.register((caller, data) => {
             if (data instanceof MatTypeHolder)
             {
