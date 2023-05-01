@@ -1,5 +1,6 @@
 import {Component, Entity, RenderCircle, System, TextDisp} from "lagom-engine";
 import {Mat, MatType} from "./GridObject";
+import {EndScore, EndSystem} from "./End";
 
 
 // export const COSTS = {
@@ -47,6 +48,8 @@ export class ResourceCount extends Component
         }
 
         entity.destroy();
+
+        this.checkWin();
     }
 
     getCount(colour: MatType): number
@@ -67,6 +70,33 @@ export class ResourceCount extends Component
 
         }
         return 0;
+    }
+
+    checkWin() {
+        // For testing
+        // if (this.red >= 1
+        //     && this.blue >= 1
+        //     && this.yellow >= 0
+        //     && this.green >= 0
+        //     && this.purple >= 0
+        //     && this.orange >= 0
+        // ) {
+        //     const endEntity = this.getScene().addEntity(new Entity("endEntity"));
+        //     endEntity.addComponent(new EndScore());
+        //     return;
+        // }
+
+        if (this.red >= 50
+            && this.blue >= 50
+            && this.yellow >= 50
+            && this.green >= 50
+            && this.purple >= 50
+            && this.orange >= 50
+        ) {
+            const endEntity = this.getScene().addEntity(new Entity("endEntity"));
+            endEntity.addComponent(new EndScore());
+            return;
+        }
     }
 }
 

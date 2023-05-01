@@ -1,5 +1,16 @@
 import {HexGrid} from "./grid/Grid";
-import {AudioAtlas, Game, GlobalSystem, Key, Log, LogLevel, Scene, SpriteSheet, TimerSystem} from 'lagom-engine';
+import {
+    AudioAtlas,
+    Component, Entity, FrameTriggerSystem,
+    Game,
+    GlobalSystem,
+    Key,
+    Log,
+    LogLevel,
+    Scene,
+    SpriteSheet, TextDisp,
+    TimerSystem
+} from 'lagom-engine';
 import {PlacerGui} from "./PlacerGui";
 import {BeltSystem} from "./tiles/Belt";
 import {worldGen} from "./grid/worldGen";
@@ -10,6 +21,7 @@ import {MatMover} from "./GridObject";
 import {Inventory} from "./Inventory";
 
 import soundtrack from "./sound/LD53-music.mp3";
+import {EndSystem} from "./End";
 
 export enum Layers
 {
@@ -18,7 +30,8 @@ export enum Layers
     GridObject,
     Path,
     Item,
-    Highlight
+    Highlight,
+    Menu
 }
 
 
@@ -36,9 +49,8 @@ class MainScene extends Scene
 
         this.addEntity(new HexGrid("Grid", 0, 0, Layers.Grid));
 
-        // this.addEntity(new Belt("b1"));
-
         this.addSystem(new BeltSystem());
+        this.addGlobalSystem(new EndSystem());
 
         worldGen(this);
     }
@@ -104,6 +116,89 @@ export class LD53 extends Game
         this.setScene(new MainScene(this));
 
         LD53.audioAtlas.play("music");
-        this.resourceLoader.loadAll().then(() => console.log("Loaded resources"));
+        this.resourceLoader.loadAll().then(() => this.setScene(new MainMenuScene(this)));
+    }
+}
+
+
+class ClickAction extends Component
+{
+    constructor(readonly action: number)
+    {
+        super();
+    }
+
+    onAction()
+    {
+        const game = this.getScene().getGame();
+        switch (this.action)
+        {
+            case 0:
+            {
+                game.setScene(new MainScene(game));
+                break;
+            }
+        }
+    }
+}
+
+class MainMenuClickListener extends GlobalSystem
+{
+    types = () => [ClickAction];
+
+    update(delta: number): void
+    {
+        this.runOnComponents((actions: ClickAction[]) =>
+        {
+            if (this.getScene().getGame().keyboard.isKeyPressed(Key.Space))
+            {
+                for (const action of actions)
+                {
+                    action.onAction();
+                    //button.destroy();
+                }
+            }
+        });
+    }
+}
+
+export class MainMenuScene extends Scene
+{
+    onAdded()
+    {
+        super.onAdded();
+        const title = this.addEntity(new Entity("title", 0, 0, Layers.Menu));
+
+        // title.addComponent(new AnimatedSprite(this.game.getResource("title").textureSliceFromSheet(), {
+        //     animationSpeed: 1000
+        // }));
+        title.addComponent(new ClickAction(0));
+
+        title.addComponent(new TextDisp(150, 0, "Press Space to start", {fontSize: 30, align: "center", fill: "white"}));
+
+        this.addGlobalSystem(new MainMenuClickListener());
+        this.addGlobalSystem(new FrameTriggerSystem());
+
+    }
+
+}
+
+export class EndScene extends Scene
+{
+    constructor(game: Game, readonly time_s: number) {
+        super(game);
+    }
+
+    onAdded()
+    {
+        const screenHeight = LD53.WINDOW_HEIGHT;
+        const screenWidth = LD53.WINDOW_WIDTH;
+
+        super.onAdded();
+        const endCard = this.addEntity(new Entity("end-card"));
+        // endCard.addComponent(new Sprite(this.game.getResource("end-card").texture(0, 0)));
+        endCard.addComponent(new TextDisp(screenWidth / 4 + 10, screenHeight / 2 - 50, "Well done! You mixed the colours in:", { fill: 0xf6cd26, fontSize: 20 }));
+        endCard.addComponent(new TextDisp(screenWidth / 4 + 10, screenHeight / 2, this.time_s.toString() + " seconds!", { fill: 0xf6cd26, fontSize: 30 }));
+        endCard.addComponent(new TextDisp(screenWidth / 4 + 10, screenHeight / 2 + 60, "F5 to play again", { fill: 0xf6cd26, fontSize: 20 }));
     }
 }
