@@ -159,14 +159,14 @@ class Placer extends GlobalSystem
                                     break;
                                 case 1:
                                     if (chosenHex.terrain.getComponent<MatTypeHolder>(MatTypeHolder)?.type ===
-                                        MatType.BLUE)
+                                        MatType.BLUE && this.payForIt(MatType.BLUE))
                                     {
                                         entity = new Miner(chosenHex, MatType.BLUE);
                                     }
                                     break;
                                 case 2:
                                     if (chosenHex.terrain.getComponent<MatTypeHolder>(MatTypeHolder)?.type ===
-                                        MatType.YELLOW)
+                                        MatType.YELLOW && this.payForIt(MatType.YELLOW))
                                     {
                                         entity = new Miner(chosenHex, MatType.YELLOW);
                                     }
@@ -178,13 +178,22 @@ class Placer extends GlobalSystem
                             switch (selected[0].idx)
                             {
                                 case 3:
-                                    entity = new Assembler(chosenHex, MatType.PURPLE);
+                                    if (this.payForIt(MatType.PURPLE))
+                                    {
+                                        entity = new Assembler(chosenHex, MatType.PURPLE);
+                                    }
                                     break;
                                 case 4:
-                                    entity = new Assembler(chosenHex, MatType.GREEN);
+                                    if (this.payForIt(MatType.GREEN))
+                                    {
+                                        entity = new Assembler(chosenHex, MatType.GREEN);
+                                    }
                                     break;
                                 case 5:
-                                    entity = new Assembler(chosenHex, MatType.ORANGE);
+                                    if (this.payForIt(MatType.ORANGE))
+                                    {
+                                        entity = new Assembler(chosenHex, MatType.ORANGE);
+                                    }
                                     break;
                             }
                         }
@@ -234,9 +243,32 @@ class Placer extends GlobalSystem
         const inv = this.scene.getEntityWithName("inv")?.getComponent<ResourceCount>(ResourceCount);
         if (!inv) return false;
 
-        // get the cost
+        let good = true;
 
-        return true;
+        // get the cost
+        const cost = COSTS.get(mat) as Costs;
+        for (const entry of Array.from(cost.amts.entries()))
+        {
+            const key = entry[0];
+            const value = entry[1];
+
+            if (inv.getCount(key) < value) {
+                good = false;
+            }
+        }
+
+        if (good) {
+            for (const entry of Array.from(cost.amts.entries()))
+            {
+                const key = entry[0];
+                const value = entry[1];
+
+                inv.pay(key, value);
+            }
+            return true;
+        }
+
+        return false;
     }
 }
 
@@ -331,7 +363,7 @@ class CanPlaceColour extends System<[RenderCircle, TextDisp, Hint]>
             }
             else
             {
-                text.pixiObj.style.fill = "red";
+                text.pixiObj.style.fill = "gray";
             }
         });
     }
@@ -388,14 +420,23 @@ export class PlacerGui extends Entity
 
         // purple
         this.addComponent(new RenderCircle(15, 105, 8, 0x0, MatType.PURPLE));
+        this.addComponent(new RenderCircle(15, 105, 6, 0x0, MatType.PURPLE));
+        this.addComponent(new RenderCircle(15, 105, 4, 0x0, MatType.PURPLE));
+        this.addComponent(new RenderCircle(15, 105, 2, 0x0, MatType.PURPLE));
         this.cost(97, COSTS.get(MatType.PURPLE) as Costs);
 
         // green
         this.addComponent(new RenderCircle(15, 135, 8, 0x0, MatType.GREEN));
+        this.addComponent(new RenderCircle(15, 135, 6, 0x0, MatType.GREEN));
+        this.addComponent(new RenderCircle(15, 135, 4, 0x0, MatType.GREEN));
+        this.addComponent(new RenderCircle(15, 135, 2, 0x0, MatType.GREEN));
         this.cost(127, COSTS.get(MatType.GREEN) as Costs);
 
         // orange
         this.addComponent(new RenderCircle(15, 165, 8, 0x0, MatType.ORANGE));
+        this.addComponent(new RenderCircle(15, 165, 6, 0x0, MatType.ORANGE));
+        this.addComponent(new RenderCircle(15, 165, 4, 0x0, MatType.ORANGE));
+        this.addComponent(new RenderCircle(15, 165, 2, 0x0, MatType.ORANGE));
         this.cost(157, COSTS.get(MatType.ORANGE) as Costs);
 
         this.addComponent(new Highlight(1, 1, 58, 30, null, 0x444444));
