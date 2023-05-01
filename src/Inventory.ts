@@ -143,7 +143,7 @@ export class Inventory extends Entity
     onAdded()
     {
         super.onAdded();
-        this.addComponent(new ResourceCount(50, 30, 30, 30, 30, 30));
+        this.addComponent(new ResourceCount(5, 0, 0, 0, 0, 0));
         this.addComponent(new TextDisp(10, -7, "", {fontSize: 10, fill: "white"}));
         this.addComponent(new RenderCircle(0, 0, 3, MatType.RED, MatType.RED));
         this.addComponent(new RenderCircle(0, 12, 3, MatType.BLUE, MatType.BLUE));
