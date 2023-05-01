@@ -340,7 +340,7 @@ class CanPlaceColour extends System<[RenderCircle, TextDisp, Hint]>
             }
             else
             {
-                text.pixiObj.style.fill = "red";
+                text.pixiObj.style.fill = "gray";
             }
         });
     }
