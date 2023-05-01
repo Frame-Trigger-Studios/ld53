@@ -159,14 +159,14 @@ class Placer extends GlobalSystem
                                     break;
                                 case 1:
                                     if (chosenHex.terrain.getComponent<MatTypeHolder>(MatTypeHolder)?.type ===
-                                        MatType.BLUE)
+                                        MatType.BLUE && this.payForIt(MatType.BLUE))
                                     {
                                         entity = new Miner(chosenHex, MatType.BLUE);
                                     }
                                     break;
                                 case 2:
                                     if (chosenHex.terrain.getComponent<MatTypeHolder>(MatTypeHolder)?.type ===
-                                        MatType.YELLOW)
+                                        MatType.YELLOW && this.payForIt(MatType.YELLOW))
                                     {
                                         entity = new Miner(chosenHex, MatType.YELLOW);
                                     }
@@ -178,13 +178,22 @@ class Placer extends GlobalSystem
                             switch (selected[0].idx)
                             {
                                 case 3:
-                                    entity = new Assembler(chosenHex, MatType.PURPLE);
+                                    if (this.payForIt(MatType.PURPLE))
+                                    {
+                                        entity = new Assembler(chosenHex, MatType.PURPLE);
+                                    }
                                     break;
                                 case 4:
-                                    entity = new Assembler(chosenHex, MatType.GREEN);
+                                    if (this.payForIt(MatType.GREEN))
+                                    {
+                                        entity = new Assembler(chosenHex, MatType.GREEN);
+                                    }
                                     break;
                                 case 5:
-                                    entity = new Assembler(chosenHex, MatType.ORANGE);
+                                    if (this.payForIt(MatType.ORANGE))
+                                    {
+                                        entity = new Assembler(chosenHex, MatType.ORANGE);
+                                    }
                                     break;
                             }
                         }
