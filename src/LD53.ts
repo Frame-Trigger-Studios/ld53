@@ -66,12 +66,9 @@ export class CameraMover extends GlobalSystem
 
     update(delta: number): void
     {
-        if (this.scene.game.mouse.getPosX())
+        if (this.scene.game.keyboard.isKeyDown(Key.KeyA))
         {
-            if (this.scene.game.keyboard.isKeyDown(Key.KeyA))
-            {
-                this.scene.camera.translate(-this.moveSpeed * delta / 1000, 0);
-            }
+            this.scene.camera.translate(-this.moveSpeed * delta / 1000, 0);
         }
         if (this.scene.game.keyboard.isKeyDown(Key.KeyD))
         {

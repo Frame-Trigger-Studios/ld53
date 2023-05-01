@@ -137,7 +137,7 @@ export class Inventory extends Entity
 {
     constructor()
     {
-        super("inv", 5, 200);
+        super("inv", 10, 280);
     }
 
     onAdded()

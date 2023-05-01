@@ -308,33 +308,25 @@ class PlaceSelector extends System<[Selected, Highlight]>
     update(delta: number): void
     {
         this.runOnEntities((entity, selected, rect) => {
-            if (this.scene.game.keyboard.isKeyPressed(Key.Digit1))
-            {
-                selected.idx = 0;
-            }
-            if (this.scene.game.keyboard.isKeyPressed(Key.Digit2))
-            {
-                selected.idx = 1;
-            }
-            if (this.scene.game.keyboard.isKeyPressed(Key.Digit3))
-            {
-                selected.idx = 2;
-            }
-            if (this.scene.game.keyboard.isKeyPressed(Key.Digit4))
-            {
-                selected.idx = 3;
-            }
-            if (this.scene.game.keyboard.isKeyPressed(Key.Digit5))
-            {
-                selected.idx = 4;
-            }
-            if (this.scene.game.keyboard.isKeyPressed(Key.Digit6))
-            {
-                selected.idx = 5;
-            }
+            if (this.scene.game.mouse.isButtonPressed(Button.LEFT)) {
+                const mx = this.scene.game.mouse.getPosX();
+                const my = this.scene.game.mouse.getPosY();
+                const mousePos = this.scene.camera.viewToWorld(mx, my);
+                const pos = this.scene.camera.position();
+
+                const guiX = mousePos.x - pos.x;
+                const guiY = mousePos.y - pos.y;
 
 
-            rect.pixiObj.y = selected.idx * 30;
+                if (guiX > 62) return;
+
+                const idx = Math.floor(guiY / 30) - 1;
+
+                if (idx >= 0 && idx < 6) {
+                    selected.idx = idx;
+                }
+                rect.pixiObj.transform.position.y = (selected.idx) * 30;
+            }
         });
     }
 }
@@ -403,42 +395,46 @@ export class PlacerGui extends Entity
         this.scene.addSystem(new PlaceSelector());
         this.scene.addGlobalSystem(new Placer());
         this.scene.addSystem(new CanPlaceColour());
+
         this.addComponent(new Selected());
-        this.addComponent(new RenderRect(0, 0, 60, LD53.WINDOW_HEIGHT, 0x000020, 0x000020));
+        this.addComponent(new RenderRect(0, 0, 62, LD53.WINDOW_HEIGHT, 0x000020, 0x000020));
 
         // red
-        this.addComponent(new RenderCircle(15, 15, 8, MatType.RED, MatType.RED));
-        this.cost(7, COSTS.get(MatType.RED) as Costs);
+        this.addComponent(new RenderCircle(15, 45, 8, MatType.RED, MatType.RED));
+        this.cost(37, COSTS.get(MatType.RED) as Costs);
 
         // blue
-        this.addComponent(new RenderCircle(15, 45, 8, MatType.BLUE, MatType.BLUE));
-        this.cost(37, COSTS.get(MatType.BLUE) as Costs);
+        this.addComponent(new RenderCircle(15, 75, 8, MatType.BLUE, MatType.BLUE));
+        this.cost(67, COSTS.get(MatType.BLUE) as Costs);
 
         // yellow
-        this.addComponent(new RenderCircle(15, 75, 8, MatType.YELLOW, MatType.YELLOW));
-        this.cost(67, COSTS.get(MatType.YELLOW) as Costs);
+        this.addComponent(new RenderCircle(15, 105, 8, MatType.YELLOW, MatType.YELLOW));
+        this.cost(97, COSTS.get(MatType.YELLOW) as Costs);
 
         // purple
-        this.addComponent(new RenderCircle(15, 105, 8, 0x0, MatType.PURPLE));
-        this.addComponent(new RenderCircle(15, 105, 6, 0x0, MatType.PURPLE));
-        this.addComponent(new RenderCircle(15, 105, 4, 0x0, MatType.PURPLE));
-        this.addComponent(new RenderCircle(15, 105, 2, 0x0, MatType.PURPLE));
-        this.cost(97, COSTS.get(MatType.PURPLE) as Costs);
+        this.addComponent(new RenderCircle(15, 135, 8, 0x0, MatType.PURPLE));
+        this.addComponent(new RenderCircle(15, 135, 6, 0x0, MatType.PURPLE));
+        this.addComponent(new RenderCircle(15, 135, 4, 0x0, MatType.PURPLE));
+        this.addComponent(new RenderCircle(15, 135, 2, 0x0, MatType.PURPLE));
+        this.cost(127, COSTS.get(MatType.PURPLE) as Costs);
 
         // green
-        this.addComponent(new RenderCircle(15, 135, 8, 0x0, MatType.GREEN));
-        this.addComponent(new RenderCircle(15, 135, 6, 0x0, MatType.GREEN));
-        this.addComponent(new RenderCircle(15, 135, 4, 0x0, MatType.GREEN));
-        this.addComponent(new RenderCircle(15, 135, 2, 0x0, MatType.GREEN));
-        this.cost(127, COSTS.get(MatType.GREEN) as Costs);
+        this.addComponent(new RenderCircle(15, 165, 8, 0x0, MatType.GREEN));
+        this.addComponent(new RenderCircle(15, 165, 6, 0x0, MatType.GREEN));
+        this.addComponent(new RenderCircle(15, 165, 4, 0x0, MatType.GREEN));
+        this.addComponent(new RenderCircle(15, 165, 2, 0x0, MatType.GREEN));
+        this.cost(157, COSTS.get(MatType.GREEN) as Costs);
 
         // orange
-        this.addComponent(new RenderCircle(15, 165, 8, 0x0, MatType.ORANGE));
-        this.addComponent(new RenderCircle(15, 165, 6, 0x0, MatType.ORANGE));
-        this.addComponent(new RenderCircle(15, 165, 4, 0x0, MatType.ORANGE));
-        this.addComponent(new RenderCircle(15, 165, 2, 0x0, MatType.ORANGE));
-        this.cost(157, COSTS.get(MatType.ORANGE) as Costs);
+        this.addComponent(new RenderCircle(15, 195, 8, 0x0, MatType.ORANGE));
+        this.addComponent(new RenderCircle(15, 195, 6, 0x0, MatType.ORANGE));
+        this.addComponent(new RenderCircle(15, 195, 4, 0x0, MatType.ORANGE));
+        this.addComponent(new RenderCircle(15, 195, 2, 0x0, MatType.ORANGE));
+        this.cost(187, COSTS.get(MatType.ORANGE) as Costs);
 
-        this.addComponent(new Highlight(1, 1, 58, 30, null, 0x444444));
+        this.addComponent(new Highlight(1, 31, 60, 30, null, 0x444444));
+
+        this.addComponent(new TextDisp(4,10,"SHOP", {fill: "white", fontSize: 15}));
+        this.addComponent(new TextDisp(4,250,"SCORE", {fill: "white", fontSize: 15}));
     }
 }
