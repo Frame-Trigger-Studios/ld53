@@ -1,14 +1,18 @@
 import {HexGrid} from "./grid/Grid";
 import {
     AudioAtlas,
-    Component, Entity, FrameTriggerSystem,
+    Component,
+    Entity,
+    FrameTriggerSystem,
     Game,
     GlobalSystem,
     Key,
     Log,
     LogLevel,
-    Scene, ScreenShake, ScreenShaker,
-    SpriteSheet, TextDisp, Timer,
+    Scene,
+    Sprite,
+    SpriteSheet,
+    TextDisp,
     TimerSystem
 } from 'lagom-engine';
 import {PlacerGui} from "./PlacerGui";
@@ -17,6 +21,7 @@ import {worldGen} from "./grid/worldGen";
 import orangeSpr from "./Art/orange.png";
 import blueSpr from "./Art/blue.png";
 import beltSpr from "./Art/belt.png";
+import titleSpr from "./Art/title_screen.png";
 import {MatMover} from "./GridObject";
 import {Inventory} from "./Inventory";
 
@@ -112,6 +117,7 @@ export class LD53 extends Game
         this.addResource("orange", new SpriteSheet(orangeSpr, 32, 32));
         this.addResource("blue", new SpriteSheet(blueSpr, 32, 32));
         this.addResource("belt", new SpriteSheet(beltSpr, 32, 32));
+        this.addResource("title", new SpriteSheet(titleSpr, 640, 360));
         this.setScene(new MainScene(this));
 
         LD53.audioAtlas.play("music");
@@ -173,7 +179,8 @@ export class MainMenuScene extends Scene
         // }));
         title.addComponent(new ClickAction(0));
 
-        title.addComponent(new TextDisp(150, 0, "Press Space to start", {fontSize: 30, align: "center", fill: "white"}));
+        title.addComponent(new Sprite(this.game.getResource("title").textureFromIndex(0)));
+        title.addComponent(new TextDisp(360/2, 210, "Press Space to start", {fontSize: 30, align: "center", fill: "white"}));
 
         this.addGlobalSystem(new MainMenuClickListener());
         this.addGlobalSystem(new FrameTriggerSystem());

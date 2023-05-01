@@ -92,21 +92,21 @@ export class ResourceCount extends Component
 
     checkWin() {
         // For testing
-        const won = this.red >= 6
-            && this.blue >= 0
-            && this.yellow >= 0
-            && this.green >= 0
-            && this.purple >= 0
-            && this.orange >= 0;
+        // const won = this.red >= 6
+        //     && this.blue >= 0
+        //     && this.yellow >= 0
+        //     && this.green >= 0
+        //     && this.purple >= 0
+        //     && this.orange >= 0;
 
 
-        // const won = this.red >= 50
-        //     && this.blue >= 50
-        //     && this.yellow >= 50
-        //     && this.green >= 50
-        //     && this.purple >= 50
-        //     && this.orange >= 50;
-        //
+        const won = this.red >= 50
+            && this.blue >= 50
+            && this.yellow >= 50
+            && this.green >= 50
+            && this.purple >= 50
+            && this.orange >= 50;
+
         if (won) {
             const endEntity = this.getScene().addEntity(new Entity("endEntity"));
             endEntity.addComponent(new EndScore());
@@ -143,7 +143,7 @@ export class Inventory extends Entity
     onAdded()
     {
         super.onAdded();
-        this.addComponent(new ResourceCount(5, 0, 0, 0, 0, 0));
+        this.addComponent(new ResourceCount(50, 30, 30, 30, 30, 30));
         this.addComponent(new TextDisp(10, -7, "", {fontSize: 10, fill: "white"}));
         this.addComponent(new RenderCircle(0, 0, 3, MatType.RED, MatType.RED));
         this.addComponent(new RenderCircle(0, 12, 3, MatType.BLUE, MatType.BLUE));

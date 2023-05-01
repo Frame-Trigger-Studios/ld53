@@ -281,10 +281,10 @@ class Costs
 const COSTS = new Map<MatType, Costs>([
     [MatType.RED, new Costs(new Map<MatType, number>([[MatType.RED, 5]]))],
     [MatType.BLUE, new Costs(new Map<MatType, number>([[MatType.RED, 10]]))],
-    [MatType.YELLOW, new Costs(new Map<MatType, number>([[MatType.PURPLE, 20], [MatType.BLUE, 40]]))],
+    [MatType.YELLOW, new Costs(new Map<MatType, number>([[MatType.PURPLE, 10], [MatType.BLUE, 30]]))],
     [MatType.PURPLE, new Costs(new Map<MatType, number>([[MatType.RED, 10], [MatType.BLUE, 10]]))],
     [MatType.ORANGE, new Costs(new Map<MatType, number>([[MatType.YELLOW, 20], [MatType.PURPLE, 10]]))],
-    [MatType.GREEN, new Costs(new Map<MatType, number>([[MatType.PURPLE, 10], [MatType.ORANGE, 20]]))],
+    [MatType.GREEN, new Costs(new Map<MatType, number>([[MatType.PURPLE, 30], [MatType.ORANGE, 20]]))],
 ]);
 
 
