@@ -149,8 +149,8 @@ export class Inventory extends Entity
         this.addComponent(new RenderCircle(0, 12, 3, MatType.BLUE, MatType.BLUE));
         this.addComponent(new RenderCircle(0, 24, 3, MatType.YELLOW, MatType.YELLOW));
         this.addComponent(new RenderCircle(0, 36, 3, MatType.PURPLE, MatType.PURPLE));
-        this.addComponent(new RenderCircle(0, 48, 3, MatType.GREEN, MatType.GREEN));
-        this.addComponent(new RenderCircle(0, 60, 3, MatType.ORANGE, MatType.ORANGE));
+        this.addComponent(new RenderCircle(0, 48, 3, MatType.ORANGE, MatType.ORANGE));
+        this.addComponent(new RenderCircle(0, 60, 3, MatType.GREEN, MatType.GREEN));
 
 
         this.scene.addSystem(new RenderInventory());
