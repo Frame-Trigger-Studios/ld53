@@ -397,14 +397,23 @@ export class PlacerGui extends Entity
 
         // purple
         this.addComponent(new RenderCircle(15, 105, 8, 0x0, MatType.PURPLE));
+        this.addComponent(new RenderCircle(15, 105, 6, 0x0, MatType.PURPLE));
+        this.addComponent(new RenderCircle(15, 105, 4, 0x0, MatType.PURPLE));
+        this.addComponent(new RenderCircle(15, 105, 2, 0x0, MatType.PURPLE));
         this.cost(97, COSTS.get(MatType.PURPLE) as Costs);
 
         // green
         this.addComponent(new RenderCircle(15, 135, 8, 0x0, MatType.GREEN));
+        this.addComponent(new RenderCircle(15, 135, 6, 0x0, MatType.GREEN));
+        this.addComponent(new RenderCircle(15, 135, 4, 0x0, MatType.GREEN));
+        this.addComponent(new RenderCircle(15, 135, 2, 0x0, MatType.GREEN));
         this.cost(127, COSTS.get(MatType.GREEN) as Costs);
 
         // orange
         this.addComponent(new RenderCircle(15, 165, 8, 0x0, MatType.ORANGE));
+        this.addComponent(new RenderCircle(15, 165, 6, 0x0, MatType.ORANGE));
+        this.addComponent(new RenderCircle(15, 165, 4, 0x0, MatType.ORANGE));
+        this.addComponent(new RenderCircle(15, 165, 2, 0x0, MatType.ORANGE));
         this.cost(157, COSTS.get(MatType.ORANGE) as Costs);
 
         this.addComponent(new Highlight(1, 1, 58, 30, null, 0x444444));

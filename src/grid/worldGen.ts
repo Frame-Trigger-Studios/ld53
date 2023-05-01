@@ -77,7 +77,7 @@ const createOrePatch = (scene: Scene, type: MatType) => {
 
     let patch = randomEntry(GRID.toArray());
 
-    let breakGlass = 20;
+    let breakGlass = 40;
     let patches = 4;
 
     while (breakGlass > 0 && patches > 0)
@@ -88,6 +88,18 @@ const createOrePatch = (scene: Scene, type: MatType) => {
 
         if (!neighbour || neighbour.terrain)
         {
+            breakGlass--;
+            continue;
+        }
+
+        if (
+            GRID.neighborOf(neighbour, Direction.N) == GRID.toArray()[0] ||
+            GRID.neighborOf(neighbour, Direction.NE) == GRID.toArray()[0] ||
+            GRID.neighborOf(neighbour, Direction.SE) == GRID.toArray()[0] ||
+            GRID.neighborOf(neighbour, Direction.S) == GRID.toArray()[0] ||
+            GRID.neighborOf(neighbour, Direction.SW) == GRID.toArray()[0] ||
+            GRID.neighborOf(neighbour, Direction.NW) == GRID.toArray()[0]) {
+
             breakGlass--;
             continue;
         }
