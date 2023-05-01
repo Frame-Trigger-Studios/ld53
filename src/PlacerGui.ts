@@ -243,9 +243,32 @@ class Placer extends GlobalSystem
         const inv = this.scene.getEntityWithName("inv")?.getComponent<ResourceCount>(ResourceCount);
         if (!inv) return false;
 
-        // get the cost
+        let good = true;
 
-        return true;
+        // get the cost
+        const cost = COSTS.get(mat) as Costs;
+        for (const entry of Array.from(cost.amts.entries()))
+        {
+            const key = entry[0];
+            const value = entry[1];
+
+            if (inv.getCount(key) < value) {
+                good = false;
+            }
+        }
+
+        if (good) {
+            for (const entry of Array.from(cost.amts.entries()))
+            {
+                const key = entry[0];
+                const value = entry[1];
+
+                inv.pay(key, value);
+            }
+            return true;
+        }
+
+        return false;
     }
 }
 
