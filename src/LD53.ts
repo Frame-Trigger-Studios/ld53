@@ -7,8 +7,8 @@ import {
     Key,
     Log,
     LogLevel,
-    Scene,
-    SpriteSheet, TextDisp,
+    Scene, ScreenShake, ScreenShaker,
+    SpriteSheet, TextDisp, Timer,
     TimerSystem
 } from 'lagom-engine';
 import {PlacerGui} from "./PlacerGui";
@@ -50,7 +50,9 @@ class MainScene extends Scene
         this.addEntity(new HexGrid("Grid", 0, 0, Layers.Grid));
 
         this.addSystem(new BeltSystem());
+        // this.addGlobalSystem(new TimerSystem());
         this.addGlobalSystem(new EndSystem());
+        // this.addGlobalSystem(new ScreenShaker(LD53.WINDOW_WIDTH / 2, LD53.WINDOW_HEIGHT / 2));
 
         worldGen(this);
     }

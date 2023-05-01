@@ -1,4 +1,4 @@
-import {Component, Entity, RenderCircle, System, TextDisp} from "lagom-engine";
+import {Component, Entity, RenderCircle, ScreenShake, System, TextDisp, Timer} from "lagom-engine";
 import {Mat, MatType} from "./GridObject";
 import {EndScore, EndSystem} from "./End";
 
@@ -92,27 +92,29 @@ export class ResourceCount extends Component
 
     checkWin() {
         // For testing
-        // if (this.red >= 1
-        //     && this.blue >= 1
-        //     && this.yellow >= 0
-        //     && this.green >= 0
-        //     && this.purple >= 0
-        //     && this.orange >= 0
-        // ) {
-        //     const endEntity = this.getScene().addEntity(new Entity("endEntity"));
-        //     endEntity.addComponent(new EndScore());
-        //     return;
-        // }
+        const won = this.red >= 6
+            && this.blue >= 0
+            && this.yellow >= 0
+            && this.green >= 0
+            && this.purple >= 0
+            && this.orange >= 0;
 
-        if (this.red >= 50
-            && this.blue >= 50
-            && this.yellow >= 50
-            && this.green >= 50
-            && this.purple >= 50
-            && this.orange >= 50
-        ) {
+
+        // const won = this.red >= 50
+        //     && this.blue >= 50
+        //     && this.yellow >= 50
+        //     && this.green >= 50
+        //     && this.purple >= 50
+        //     && this.orange >= 50;
+        //
+        if (won) {
             const endEntity = this.getScene().addEntity(new Entity("endEntity"));
             endEntity.addComponent(new EndScore());
+            // const shake_time = 1000;
+            // endEntity.addComponent(new ScreenShake(0.5, shake_time, ));
+            //
+            // Delay end to ensure shake
+            // const timer = endEntity.addComponent(new Timer(0, () => endEntity.addComponent(new EndScore()), false));
             return;
         }
     }
